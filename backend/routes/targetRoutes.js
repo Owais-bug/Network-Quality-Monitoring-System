@@ -1,9 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const { getTargets, addTarget } = require("../controllers/targetController");
+const {
+    getTargets,
+    addTarget,
+    getSingleTarget,
+    editTarget,
+    toggleTarget,
+    removeTarget
+} = require("../controllers/targetController");
 
 router.get("/", getTargets);
 router.post("/", addTarget);
+router.get("/:id", getSingleTarget);
+router.patch("/:id", editTarget);
+router.patch("/:id/enabled", toggleTarget);
+router.delete("/:id", removeTarget);
 
 module.exports = router;
