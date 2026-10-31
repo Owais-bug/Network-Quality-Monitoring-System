@@ -2,10 +2,12 @@
 const express = require("express");
 const pool = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
+const targetRoutes = require("./routes/targetRoutes");
 const app = express();
 const PORT = 5000;
 
 app.use(express.json());
+app.use("/api/targets", targetRoutes);
 
 app.get("/", (req, res) => {
     res.send("Network Quality Monitoring Backend is running!");
