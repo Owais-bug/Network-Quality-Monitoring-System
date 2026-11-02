@@ -1,10 +1,14 @@
+// Phase 7: Event Handling
+const {
+    processTargetEvent
+} = require("../services/eventService");
 const {
     getAllTargets,
     createTarget,
     getTargetById,
     updateTarget,
     setTargetEnabled,
-       updateTargetStatus,
+    updateTargetStatus,
     deleteTarget
 } = require("../models/targetModel");
 
@@ -347,20 +351,28 @@ const runTargetCheck = async (req, res, next) => {
             status,
             result.checked_at
         );
-
+        const event = await processTargetEvent(
+            target.id,
+            status,
+            result.response_time_ms,
+            target.critical_threshold_ms
+        );
+        console.log("PHASE 7 EVENT DEBUG:", event);
         // Step 7: Return API response
         res.status(200).json({
             message: "Monitoring check completed",
             checkId,
             targetId: target.id,
             status,
-            result
+            result,
+            event
         });
 
     } catch (error) {
         next(error);
     }
 };
+
 
 module.exports = {
     getTargets,
