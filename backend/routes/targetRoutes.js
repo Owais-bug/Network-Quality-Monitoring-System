@@ -7,7 +7,8 @@ const {
     getSingleTarget,
     editTarget,
     toggleTarget,
-    removeTarget
+    removeTarget,
+    runTargetCheck
 } = require("../controllers/targetController");
 
 router.get("/", getTargets);
@@ -16,5 +17,6 @@ router.get("/:id", getSingleTarget);
 router.patch("/:id", editTarget);
 router.patch("/:id/enabled", toggleTarget);
 router.delete("/:id", removeTarget);
+router.post("/:id/check", runTargetCheck);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const pool = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
 const targetRoutes = require("./routes/targetRoutes");
 const app = express();
+
 const PORT = 5000;
 
 app.use(express.json());
@@ -23,19 +24,6 @@ app.get("/api/health" , (req,res)=>{
 
 // Temporary local testing routes
 
-app.get("/api/test-error", (req, res) => {
-    res.status(503).json({
-        message: "Service Temporarily Unavailable"
-    });
-});
-
-app.get("/api/test-timeout", async (req, res) => {
-    await new Promise(resolve => setTimeout(resolve, 6000));
-
-    res.status(200).json({
-        message: "Delayed Response"
-    });
-});
 
 
 

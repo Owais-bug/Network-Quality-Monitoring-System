@@ -4,8 +4,19 @@ const {
     getTargetById,
     updateTarget,
     setTargetEnabled,
+       updateTargetStatus,
     deleteTarget
 } = require("../models/targetModel");
+
+// Phase 6: Monitoring functions
+const {
+    checkTarget,
+    determineTargetStatus
+} = require("../services/monitoringService");
+
+const {
+    saveCheckResult
+} = require("../models/checkResultModel");
 
 const getTargets = async (req, res, next) => {
     try {
@@ -297,11 +308,66 @@ const removeTarget = async (req, res, next) => {
     }
 };
 
+// Phase 6: Run a manual monitoring check
+const runTargetCheck = async (req, res, next) => {
+    try {
+        // Step 1: Get target ID from URL
+        const id = Number(req.params.id);
+
+        if (!Number.isSafeInteger(id) || id <= 0) {
+            return res.status(400).json({
+                message: "Invalid target ID"
+            });
+        }
+
+        // Step 2: Find target in MySQL
+        const target = await getTargetById(id);
+
+        if (!target) {
+            return res.status(404).json({
+                message: "Target not found"
+            });
+        }
+
+        // Step 3: Run monitoring check
+        const result = await checkTarget(target);
+
+        // Step 4: Calculate UP, SLOW or DOWN
+        const status = determineTargetStatus(
+            result,
+            target.threshold_ms
+        );
+
+        // Step 5: Save monitoring history
+        const checkId = await saveCheckResult(result);
+
+        // Step 6: Update target's current status
+        await updateTargetStatus(
+            target.id,
+            status,
+            result.checked_at
+        );
+
+        // Step 7: Return API response
+        res.status(200).json({
+            message: "Monitoring check completed",
+            checkId,
+            targetId: target.id,
+            status,
+            result
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getTargets,
     addTarget,
     getSingleTarget,
     editTarget,
     toggleTarget,
-    removeTarget
+    removeTarget,
+    runTargetCheck
 };

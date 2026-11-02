@@ -82,7 +82,7 @@ const resolveHostname = async (hostname) => {
         timeout: DNS_TIMEOUT,
         tries: 1
     });
-
+resolver.setServers(["8.8.8.8"]);
     try {
         const addresses = await resolver.resolve4(hostname);
 
@@ -90,9 +90,10 @@ const resolveHostname = async (hostname) => {
             address,
             family: 4
         }));
-    } catch {
-        return [];
-    } finally {
+    }  catch (error) {
+    console.error("DNS Resolution Error:", error.code, error.message);
+    return [];
+} finally {
         resolver.cancel();
     }
 };
@@ -218,10 +219,28 @@ const checkTarget = async (target) => {
     return result;
 };
 
+// Phase 6: Determine target status
+const determineTargetStatus = (result, thresholdMs) => {
+
+    // Request failed or timed out
+    if (!result || result.success !== true) {
+        return "DOWN";
+    }
+
+    // Successful request but slow response
+    if (result.response_time_ms >= thresholdMs) {
+        return "SLOW";
+    }
+
+    // Successful request with normal response time
+    return "UP";
+};
+
 module.exports = {
     validateUrl,
     resolveHostname,
     isAllowedAddress,
     validateDnsAddresses,
-    checkTarget
+    checkTarget,
+     determineTargetStatus
 };

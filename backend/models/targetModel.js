@@ -71,13 +71,26 @@ const getOneEnabledTarget = async () => {
     return rows[0] || null;
 };
 
+const updateTargetStatus = async (id, status, checkedAt) => {
+
+    const [result] = await pool.query(
+        `UPDATE targets
+         SET current_status = ?,
+             last_checked_at = ?
+         WHERE id = ?`,
+        [status, new Date(checkedAt), id]
+    );
+
+    return result.affectedRows;
+};
 
 module.exports = {
     getAllTargets,
     createTarget,
     getTargetById,
     updateTarget,
-       setTargetEnabled,
-          deleteTarget,
-          getOneEnabledTarget
+    setTargetEnabled,
+    deleteTarget,
+    getOneEnabledTarget,
+     updateTargetStatus
 };
