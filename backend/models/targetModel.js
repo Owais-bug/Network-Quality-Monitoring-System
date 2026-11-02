@@ -59,11 +59,25 @@ const deleteTarget = async (id) => {
     return result.affectedRows;
 };
 
+
+const getOneEnabledTarget = async () => {
+    const [rows] = await pool.query(
+        `SELECT * FROM targets
+         WHERE enabled = 1
+         ORDER BY id ASC
+         LIMIT 1`
+    );
+
+    return rows[0] || null;
+};
+
+
 module.exports = {
     getAllTargets,
     createTarget,
     getTargetById,
     updateTarget,
        setTargetEnabled,
-          deleteTarget
+          deleteTarget,
+          getOneEnabledTarget
 };
