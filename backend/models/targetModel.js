@@ -84,6 +84,23 @@ const updateTargetStatus = async (id, status, checkedAt) => {
     return result.affectedRows;
 };
 
+const getDueTargets = async () => {
+    const [rows] = await pool.query(
+        `SELECT * FROM targets
+         WHERE enabled = 1
+         AND (
+             last_checked_at IS NULL
+             OR TIMESTAMPDIFF(
+                 SECOND,
+                 last_checked_at,
+                 NOW()
+             ) >= interval_seconds
+         )`
+    );
+
+    return rows;
+};
+
 module.exports = {
     getAllTargets,
     createTarget,
@@ -92,5 +109,6 @@ module.exports = {
     setTargetEnabled,
     deleteTarget,
     getOneEnabledTarget,
-     updateTargetStatus
+    updateTargetStatus,
+    getDueTargets
 };

@@ -3,6 +3,7 @@ const express = require("express");
 const pool = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
 const targetRoutes = require("./routes/targetRoutes");
+const { startMonitoringScheduler } = require("./scheduler/monitoringScheduler");
 const app = express();
 
 const PORT = 5000;
@@ -46,4 +47,6 @@ testDatabaseConnection();
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+
+    startMonitoringScheduler();
 });
