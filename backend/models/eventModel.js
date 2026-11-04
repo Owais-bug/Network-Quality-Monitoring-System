@@ -42,4 +42,52 @@ const resolveEvent = async (eventId) => {
   return result.affectedRows;
 };
 
-module.exports = { createEvent , findActiveEvent ,  resolveEvent};
+
+const getAllEvents = async (
+  severity = null,
+  resolved = null,
+  limit = 50
+) => {
+  let query = `
+    SELECT
+      e.id,
+      e.target_id,
+      t.name AS target_name,
+      e.event_type,
+      e.severity,
+      e.message,
+      e.created_at,
+      e.resolved_at
+    FROM events e
+    JOIN targets t ON e.target_id = t.id
+    WHERE 1 = 1
+  `;
+
+  const params = [];
+
+  if (severity !== null) {
+    query += " AND e.severity = ?";
+    params.push(severity);
+  }
+
+  if (resolved !== null) {
+    query += resolved
+      ? " AND e.resolved_at IS NOT NULL"
+      : " AND e.resolved_at IS NULL";
+  }
+
+  query += " ORDER BY e.created_at DESC, e.id DESC LIMIT ?";
+  params.push(limit);
+
+  const [rows] = await db.query(query, params);
+
+  return rows;
+};
+
+
+module.exports = {
+  createEvent,
+  findActiveEvent,
+  resolveEvent,
+  getAllEvents
+};

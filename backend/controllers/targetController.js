@@ -1,7 +1,8 @@
-// Phase 7: Event Handling
+
 const {
     processTargetEvent
 } = require("../services/eventService");
+
 const {
     getAllTargets,
     createTarget,
@@ -15,25 +16,65 @@ const {
 const {
     performTargetCheck
 } = require("../services/targetCheckService");
-// Phase 6: Monitoring functions
+
 const {
     checkTarget,
     determineTargetStatus
 } = require("../services/monitoringService");
 
 const {
-    saveCheckResult
+    saveCheckResult,
+    getTargetHistory
 } = require("../models/checkResultModel");
+
+
+// ========================================
+// GET ALL TARGETS + STATUS FILTERING
+// Phase 9
+// ========================================
 
 const getTargets = async (req, res, next) => {
     try {
-        const targets = await getAllTargets();
+        const { status } = req.query;
+        console.log("PHASE 9 DEBUG - Received status:", status);
 
-        res.status(200).json(targets);
+        const allowedStatuses = [
+            "UP",
+            "SLOW",
+            "DOWN",
+            "UNKNOWN"
+        ];
+
+        // Validate status if provided
+        if (
+            status !== undefined &&
+            (
+                typeof status !== "string" ||
+                !allowedStatuses.includes(status)
+            )
+        ) {
+            return res.status(400).json({
+                message:
+                    "Invalid status. Use UP, SLOW, DOWN, or UNKNOWN"
+            });
+        }
+
+        // Fetch all or filtered targets
+        const targets = await getAllTargets(
+            status ?? null
+        );
+
+        return res.status(200).json(targets);
+
     } catch (error) {
         next(error);
     }
 };
+
+
+// ========================================
+// ADD NEW TARGET
+// ========================================
 
 const addTarget = async (req, res, next) => {
     try {
@@ -45,9 +86,14 @@ const addTarget = async (req, res, next) => {
         } = req.body || {};
 
         // Validate target name
-        if (typeof name !== "string" || !name.trim() || name.trim().length > 100) {
+        if (
+            typeof name !== "string" ||
+            !name.trim() ||
+            name.trim().length > 100
+        ) {
             return res.status(400).json({
-                message: "Valid target name is required (max 100 characters)"
+                message:
+                    "Valid target name is required (max 100 characters)"
             });
         }
 
@@ -57,33 +103,54 @@ const addTarget = async (req, res, next) => {
         try {
             parsedUrl = new URL(url);
 
-            if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+            if (
+                !["http:", "https:"].includes(parsedUrl.protocol)
+            ) {
                 throw new Error("Invalid protocol");
             }
 
-            if (parsedUrl.username || parsedUrl.password) {
-                throw new Error("Credentials are not allowed");
+            if (
+                parsedUrl.username ||
+                parsedUrl.password
+            ) {
+                throw new Error(
+                    "Credentials are not allowed"
+                );
             }
 
-            if (parsedUrl.hostname.length > 100 || url.length > 255) {
+            if (
+                parsedUrl.hostname.length > 100 ||
+                url.length > 255
+            ) {
                 throw new Error("URL too long");
             }
+
         } catch {
             return res.status(400).json({
-                message: "Enter a valid HTTP or HTTPS URL"
+                message:
+                    "Enter a valid HTTP or HTTPS URL"
             });
         }
 
-        // Validate interval and threshold
-        if (!Number.isInteger(interval_seconds) || interval_seconds < 10) {
+        // Validate interval
+        if (
+            !Number.isInteger(interval_seconds) ||
+            interval_seconds < 10
+        ) {
             return res.status(400).json({
-                message: "Interval must be an integer of at least 10 seconds"
+                message:
+                    "Interval must be an integer of at least 10 seconds"
             });
         }
 
-        if (!Number.isInteger(threshold_ms) || threshold_ms < 1) {
+        // Validate threshold
+        if (
+            !Number.isInteger(threshold_ms) ||
+            threshold_ms < 1
+        ) {
             return res.status(400).json({
-                message: "Threshold must be a positive integer"
+                message:
+                    "Threshold must be a positive integer"
             });
         }
 
@@ -97,7 +164,7 @@ const addTarget = async (req, res, next) => {
             threshold_ms
         );
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "Target added successfully",
             targetId
         });
@@ -107,11 +174,19 @@ const addTarget = async (req, res, next) => {
     }
 };
 
+
+// ========================================
+// GET SINGLE TARGET
+// ========================================
+
 const getSingleTarget = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
 
-        if (!Number.isSafeInteger(id) || id <= 0) {
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
             return res.status(400).json({
                 message: "Invalid target ID"
             });
@@ -125,25 +200,31 @@ const getSingleTarget = async (req, res, next) => {
             });
         }
 
-        res.status(200).json(target);
+        return res.status(200).json(target);
 
     } catch (error) {
         next(error);
     }
 };
 
+
+// ========================================
+// UPDATE TARGET
+// ========================================
+
 const editTarget = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
 
-        // Validate ID
-        if (!Number.isSafeInteger(id) || id <= 0) {
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
             return res.status(400).json({
                 message: "Invalid target ID"
             });
         }
 
-        // Find existing target
         const existingTarget = await getTargetById(id);
 
         if (!existingTarget) {
@@ -152,7 +233,6 @@ const editTarget = async (req, res, next) => {
             });
         }
 
-        // Get updated values or keep old values
         const {
             name = existingTarget.name,
             url = existingTarget.url,
@@ -161,9 +241,11 @@ const editTarget = async (req, res, next) => {
         } = req.body || {};
 
         // Validate name
-        if (typeof name !== "string" ||
+        if (
+            typeof name !== "string" ||
             !name.trim() ||
-            name.trim().length > 100) {
+            name.trim().length > 100
+        ) {
             return res.status(400).json({
                 message: "Valid target name is required"
             });
@@ -173,43 +255,57 @@ const editTarget = async (req, res, next) => {
         let parsedUrl;
 
         try {
-            if (typeof url !== "string" || url.length > 255) {
+            if (
+                typeof url !== "string" ||
+                url.length > 255
+            ) {
                 throw new Error("Invalid URL");
             }
 
             parsedUrl = new URL(url);
 
-            if (!["http:", "https:"].includes(parsedUrl.protocol) ||
+            if (
+                !["http:", "https:"].includes(
+                    parsedUrl.protocol
+                ) ||
                 parsedUrl.username ||
                 parsedUrl.password ||
-                parsedUrl.hostname.length > 100) {
+                parsedUrl.hostname.length > 100
+            ) {
                 throw new Error("Invalid URL");
             }
+
         } catch {
             return res.status(400).json({
-                message: "Enter a valid HTTP or HTTPS URL"
+                message:
+                    "Enter a valid HTTP or HTTPS URL"
             });
         }
 
         // Validate interval
-        if (!Number.isInteger(interval_seconds) ||
-            interval_seconds < 10) {
+        if (
+            !Number.isInteger(interval_seconds) ||
+            interval_seconds < 10
+        ) {
             return res.status(400).json({
-                message: "Interval must be at least 10 seconds"
+                message:
+                    "Interval must be at least 10 seconds"
             });
         }
 
         // Validate threshold
-        if (!Number.isInteger(threshold_ms) ||
-            threshold_ms < 1) {
+        if (
+            !Number.isInteger(threshold_ms) ||
+            threshold_ms < 1
+        ) {
             return res.status(400).json({
-                message: "Threshold must be a positive integer"
+                message:
+                    "Threshold must be a positive integer"
             });
         }
 
         const host = parsedUrl.hostname.toLowerCase();
 
-        // Update database
         await updateTarget(
             id,
             name.trim(),
@@ -219,7 +315,7 @@ const editTarget = async (req, res, next) => {
             threshold_ms
         );
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Target updated successfully",
             targetId: id
         });
@@ -229,26 +325,32 @@ const editTarget = async (req, res, next) => {
     }
 };
 
+
+// ========================================
+// ENABLE / DISABLE TARGET
+// ========================================
+
 const toggleTarget = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
         const { enabled } = req.body || {};
 
-        // Validate target ID
-        if (!Number.isSafeInteger(id) || id <= 0) {
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
             return res.status(400).json({
                 message: "Invalid target ID"
             });
         }
 
-        // Validate enabled value
         if (typeof enabled !== "boolean") {
             return res.status(400).json({
-                message: "enabled must be true or false"
+                message:
+                    "enabled must be true or false"
             });
         }
 
-        // Check if target exists
         const existingTarget = await getTargetById(id);
 
         if (!existingTarget) {
@@ -257,13 +359,11 @@ const toggleTarget = async (req, res, next) => {
             });
         }
 
-        // Convert boolean to MySQL value
         const enabledValue = enabled ? 1 : 0;
 
-        // Update target
         await setTargetEnabled(id, enabledValue);
 
-        res.status(200).json({
+        return res.status(200).json({
             message: enabled
                 ? "Target enabled successfully"
                 : "Target disabled successfully",
@@ -276,18 +376,24 @@ const toggleTarget = async (req, res, next) => {
     }
 };
 
+
+// ========================================
+// DELETE TARGET
+// ========================================
+
 const removeTarget = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
 
-        // Validate target ID
-        if (!Number.isSafeInteger(id) || id <= 0) {
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
             return res.status(400).json({
                 message: "Invalid target ID"
             });
         }
 
-        // Check if target exists
         const existingTarget = await getTargetById(id);
 
         if (!existingTarget) {
@@ -296,7 +402,6 @@ const removeTarget = async (req, res, next) => {
             });
         }
 
-        // Delete target from database
         const deletedRows = await deleteTarget(id);
 
         if (deletedRows === 0) {
@@ -305,7 +410,7 @@ const removeTarget = async (req, res, next) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Target deleted successfully",
             targetId: id
         });
@@ -315,12 +420,20 @@ const removeTarget = async (req, res, next) => {
     }
 };
 
-// Phase 8: Manual monitoring using reusable service
+
+// ========================================
+// MANUAL MONITORING CHECK
+// Phase 8
+// ========================================
+
 const runTargetCheck = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
 
-        if (!Number.isSafeInteger(id) || id <= 0) {
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
             return res.status(400).json({
                 message: "Invalid target ID"
             });
@@ -334,12 +447,67 @@ const runTargetCheck = async (req, res, next) => {
             });
         }
 
-        // Reuse the complete monitoring workflow
-        const checkData = await performTargetCheck(target);
+        const checkData = await performTargetCheck(
+            target
+        );
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Monitoring check completed",
             ...checkData
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// ========================================
+// EXPORT CONTROLLER FUNCTIONS
+// ========================================
+
+
+const getHistory = async (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+
+        // Validate target ID
+        if (!Number.isSafeInteger(id) || id <= 0) {
+            return res.status(400).json({
+                message: "Invalid target ID"
+            });
+        }
+
+        // Validate history limit
+        const limit = Number(req.query.limit ?? 50);
+
+        if (
+            !Number.isSafeInteger(limit) ||
+            limit < 1 ||
+            limit > 500
+        ) {
+            return res.status(400).json({
+                message: "Limit must be between 1 and 500"
+            });
+        }
+
+        // Check target exists
+        const target = await getTargetById(id);
+
+        if (!target) {
+            return res.status(404).json({
+                message: "Target not found"
+            });
+        }
+
+        // Fetch monitoring history
+        const history = await getTargetHistory(id, limit);
+
+        return res.status(200).json({
+            targetId: id,
+            targetName: target.name,
+            count: history.length,
+            history
         });
 
     } catch (error) {
@@ -355,5 +523,6 @@ module.exports = {
     editTarget,
     toggleTarget,
     removeTarget,
-    runTargetCheck
+    runTargetCheck,
+    getHistory
 };

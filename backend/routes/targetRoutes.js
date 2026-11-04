@@ -8,8 +8,12 @@ const {
     editTarget,
     toggleTarget,
     removeTarget,
-    runTargetCheck
+    runTargetCheck,
+    getHistory
 } = require("../controllers/targetController");
+
+
+
 
 router.get("/", getTargets);
 router.post("/", addTarget);
@@ -18,5 +22,6 @@ router.patch("/:id", editTarget);
 router.patch("/:id/enabled", toggleTarget);
 router.delete("/:id", removeTarget);
 router.post("/:id/check", runTargetCheck);
+router.get("/:id/history", getHistory);
 
 module.exports = router;

@@ -1,12 +1,22 @@
 const pool = require("../config/db");
 
-const getAllTargets = async () => {
-    const [rows] = await pool.query(
-        "SELECT * FROM targets"
-    );
+
+
+const getAllTargets = async (status = null) => {
+    let query = "SELECT * FROM targets";
+    const params = [];
+
+    if (status !== null) {
+        query += " WHERE current_status = ?";
+        params.push(status);
+    }
+
+    const [rows] = await pool.query(query, params);
 
     return rows;
 };
+
+
 
 const createTarget = async (name, host, url, interval_seconds, threshold_ms) => {
 

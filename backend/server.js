@@ -2,42 +2,52 @@
 const express = require("express");
 const pool = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const targetRoutes = require("./routes/targetRoutes");
-const { startMonitoringScheduler } = require("./scheduler/monitoringScheduler");
+const eventRoutes = require("./routes/eventRoutes");
+
+const {
+    startMonitoringScheduler
+} = require("./scheduler/monitoringScheduler");
+
 const app = express();
 
 const PORT = 5000;
 
+// Middleware
 app.use(express.json());
-app.use("/api/targets", targetRoutes);
 
+// API Routes
+app.use("/api/targets", targetRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
+// Root Route
 app.get("/", (req, res) => {
     res.send("Network Quality Monitoring Backend is running!");
 });
 
-app.get("/api/health" , (req,res)=>{
+// Health API
+app.get("/api/health", (req, res) => {
     res.status(200).json({
         status: "OK",
         message: "Network Monitoring API is Healthy"
     });
-})
+});
 
-
-// Temporary local testing routes
-
-
-
-
-
+// Central Error Handler
 app.use(errorHandler);
 
+// Database Connection Test
 async function testDatabaseConnection() {
     try {
         const [rows] = await pool.query("SELECT 1 AS result");
         const [tables] = await pool.query("SHOW TABLES");
+
         console.log("Database Tables:", tables);
         console.log("MySQL Connected Successfully!");
         console.log("Database Test Result:", rows[0].result);
+
     } catch (error) {
         console.error("MySQL Connection Failed:", error.message);
     }
@@ -45,6 +55,7 @@ async function testDatabaseConnection() {
 
 testDatabaseConnection();
 
+// Start Backend Server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 

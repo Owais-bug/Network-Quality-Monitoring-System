@@ -20,4 +20,26 @@ const saveCheckResult = async (result) => {
     return dbResult.insertId;
 };
 
-module.exports = { saveCheckResult };
+
+const getTargetHistory = async (targetId, limit = 50) => {
+    const [rows] = await pool.query(
+        `SELECT
+            id,
+            target_id,
+            checked_at,
+            success,
+            http_status_code,
+            response_time_ms,
+            error_message
+         FROM check_results
+         WHERE target_id = ?
+         ORDER BY checked_at DESC, id DESC
+         LIMIT ?`,
+        [targetId, limit]
+    );
+
+    return rows;
+};
+
+
+module.exports = { saveCheckResult ,   getTargetHistory };
