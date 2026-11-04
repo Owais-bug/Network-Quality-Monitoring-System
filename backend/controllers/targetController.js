@@ -12,6 +12,9 @@ const {
     deleteTarget
 } = require("../models/targetModel");
 
+const {
+    performTargetCheck
+} = require("../services/targetCheckService");
 // Phase 6: Monitoring functions
 const {
     checkTarget,
@@ -312,10 +315,9 @@ const removeTarget = async (req, res, next) => {
     }
 };
 
-// Phase 6: Run a manual monitoring check
+// Phase 8: Manual monitoring using reusable service
 const runTargetCheck = async (req, res, next) => {
     try {
-        // Step 1: Get target ID from URL
         const id = Number(req.params.id);
 
         if (!Number.isSafeInteger(id) || id <= 0) {
@@ -324,7 +326,6 @@ const runTargetCheck = async (req, res, next) => {
             });
         }
 
-        // Step 2: Find target in MySQL
         const target = await getTargetById(id);
 
         if (!target) {
@@ -333,39 +334,12 @@ const runTargetCheck = async (req, res, next) => {
             });
         }
 
-        // Step 3: Run monitoring check
-        const result = await checkTarget(target);
+        // Reuse the complete monitoring workflow
+        const checkData = await performTargetCheck(target);
 
-        // Step 4: Calculate UP, SLOW or DOWN
-        const status = determineTargetStatus(
-            result,
-            target.threshold_ms
-        );
-
-        // Step 5: Save monitoring history
-        const checkId = await saveCheckResult(result);
-
-        // Step 6: Update target's current status
-        await updateTargetStatus(
-            target.id,
-            status,
-            result.checked_at
-        );
-        const event = await processTargetEvent(
-            target.id,
-            status,
-            result.response_time_ms,
-            target.critical_threshold_ms
-        );
-        console.log("PHASE 7 EVENT DEBUG:", event);
-        // Step 7: Return API response
         res.status(200).json({
             message: "Monitoring check completed",
-            checkId,
-            targetId: target.id,
-            status,
-            result,
-            event
+            ...checkData
         });
 
     } catch (error) {
