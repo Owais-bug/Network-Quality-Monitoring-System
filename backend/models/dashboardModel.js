@@ -10,13 +10,16 @@ const getDashboardSummary = async () => {
             SUM(CASE WHEN current_status = 'DOWN' THEN 1 ELSE 0 END) AS downTargets,
             SUM(CASE WHEN current_status = 'UNKNOWN' THEN 1 ELSE 0 END) AS unknownTargets
         FROM targets
+        WHERE is_archived = 0
     `);
 
-    const [eventRows] = await pool.query(`
-        SELECT COUNT(*) AS activeEvents
-        FROM events
-        WHERE resolved_at IS NULL
-    `);
+   const [eventRows] = await pool.query(`
+    SELECT COUNT(*) AS activeEvents
+    FROM events e
+    INNER JOIN targets t ON e.target_id = t.id
+    WHERE e.resolved_at IS NULL
+      AND t.is_archived = 0
+`);
 
     return {
         totalTargets: Number(rows[0].totalTargets),

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 
-function TargetList({ refreshCount }) {
+function TargetList({ refreshCount , onTargetsChanged}) {
 
     const [targets, setTargets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,12 +60,17 @@ function TargetList({ refreshCount }) {
 
             // Update React state after successful API response
             setTargets((previousTargets) =>
-                previousTargets.map((target) =>
-                    target.id === id
-                        ? { ...target, enabled: newEnabled ? 1 : 0 }
-                        : target
-                )
-            );
+    previousTargets.map((target) =>
+        target.id === id
+            ? { ...target, enabled: newEnabled ? 1 : 0 }
+            : target
+    )
+);
+
+// Notify parent to refresh dashboard data
+onTargetsChanged();
+
+alert(data.message);
 
             alert(data.message);
 
@@ -97,10 +102,13 @@ function TargetList({ refreshCount }) {
             }
 
             setTargets((previousTargets) =>
-                previousTargets.filter((target) => target.id !== id)
-            );
+  previousTargets.filter((target) => target.id !== id)
+);
 
-            alert(data.message);
+// Notify App.jsx to refresh dashboard summary
+onTargetsChanged();
+
+alert(data.message);
 
         } catch (error) {
             console.error("Error deleting target:", error);
@@ -151,7 +159,7 @@ function TargetList({ refreshCount }) {
             );
 
             setEditingTarget(null);
-
+onTargetsChanged();
             alert("Target updated successfully");
 
         } catch (error) {
@@ -266,21 +274,23 @@ function TargetList({ refreshCount }) {
                     >
                         Edit
                     </button>
-                    <div>
-                        <button
-                            type="button"
-                            onClick={handleSave}
-                        >
-                            Save Changes
-                        </button>
+                    {editingTarget && editingTarget.id === target.id && (
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handleSave}
+                            >
+                                Save Changes
+                            </button>
 
-                        <button
-                            type="button"
-                            onClick={() => setEditingTarget(null)}
-                        >
-                            Cancel
-                        </button>
-                    </div>
+                            <button
+                                type="button"
+                                onClick={() => setEditingTarget(null)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
 
                 </div>
             ))}

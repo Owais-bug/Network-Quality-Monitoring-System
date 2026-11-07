@@ -3,11 +3,11 @@ const pool = require("../config/db");
 
 
 const getAllTargets = async (status = null) => {
-    let query = "SELECT * FROM targets";
+    let query = "SELECT * FROM targets WHERE is_archived = 0";
     const params = [];
 
     if (status !== null) {
-        query += " WHERE current_status = ?";
+       query += " AND current_status = ?";
         params.push(status);
     }
 
@@ -60,14 +60,18 @@ const setTargetEnabled = async (id, enabled) => {
     return result.affectedRows;
 };
 
+
 const deleteTarget = async (id) => {
     const [result] = await pool.query(
-        "DELETE FROM targets WHERE id = ?",
+        `UPDATE targets
+         SET is_archived = 1, enabled = 0
+         WHERE id = ? AND is_archived = 0`,
         [id]
     );
 
     return result.affectedRows;
 };
+
 
 
 const getOneEnabledTarget = async () => {
@@ -98,6 +102,7 @@ const getDueTargets = async () => {
     const [rows] = await pool.query(
         `SELECT * FROM targets
          WHERE enabled = 1
+         AND is_archived = 0
          AND (
              last_checked_at IS NULL
              OR TIMESTAMPDIFF(

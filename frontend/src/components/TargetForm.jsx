@@ -55,7 +55,7 @@ function TargetForm({ onTargetAdded }) {
   };
 
   return (
-    <div>
+    <div className="target-form-card">
       <h2>Add New Website</h2>
       <p>Enter website details to start monitoring.</p>
 
