@@ -3,11 +3,25 @@ const pool = require("../config/db");
 
 
 const getAllTargets = async (status = null) => {
-    let query = "SELECT * FROM targets WHERE is_archived = 0";
+    
+let query = `
+    SELECT
+        t.*,
+        cr.response_time_ms AS latest_response_time_ms
+    FROM targets t
+    LEFT JOIN check_results cr
+        ON cr.id = (
+            SELECT MAX(cr2.id)
+            FROM check_results cr2
+            WHERE cr2.target_id = t.id
+        )
+    WHERE t.is_archived = 0
+`;
+
     const params = [];
 
     if (status !== null) {
-       query += " AND current_status = ?";
+       query += " AND t.current_status = ?";
         params.push(status);
     }
 

@@ -1,7 +1,7 @@
-
+import TargetTable from "./TargetTable";
 import { useState, useEffect } from "react";
 
-function TargetList({ refreshCount , onTargetsChanged}) {
+function TargetList({ refreshCount, onTargetsChanged }) {
 
     const [targets, setTargets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,17 +60,15 @@ function TargetList({ refreshCount , onTargetsChanged}) {
 
             // Update React state after successful API response
             setTargets((previousTargets) =>
-    previousTargets.map((target) =>
-        target.id === id
-            ? { ...target, enabled: newEnabled ? 1 : 0 }
-            : target
-    )
-);
+                previousTargets.map((target) =>
+                    target.id === id
+                        ? { ...target, enabled: newEnabled ? 1 : 0 }
+                        : target
+                )
+            );
 
-// Notify parent to refresh dashboard data
-onTargetsChanged();
-
-alert(data.message);
+            // Notify parent to refresh dashboard data
+            onTargetsChanged();
 
             alert(data.message);
 
@@ -102,13 +100,13 @@ alert(data.message);
             }
 
             setTargets((previousTargets) =>
-  previousTargets.filter((target) => target.id !== id)
-);
+                previousTargets.filter((target) => target.id !== id)
+            );
 
-// Notify App.jsx to refresh dashboard summary
-onTargetsChanged();
+            // Notify App.jsx to refresh dashboard summary
+            onTargetsChanged();
 
-alert(data.message);
+            alert(data.message);
 
         } catch (error) {
             console.error("Error deleting target:", error);
@@ -159,7 +157,7 @@ alert(data.message);
             );
 
             setEditingTarget(null);
-onTargetsChanged();
+            onTargetsChanged();
             alert("Target updated successfully");
 
         } catch (error) {
@@ -167,12 +165,45 @@ onTargetsChanged();
             alert("Unable to save changes");
         }
     };
+
     return (
         <div>
             <h2>Monitored Websites</h2>
+
+            {loading && <p>Loading websites...</p>}
+
+            {error && <p role="alert">{error}</p>}
+
+            {!loading && !error && targets.length === 0 && (
+                <p>No websites found.</p>
+            )}
+
+            {!loading && !error && targets.length > 0 && (
+                <TargetTable
+                    targets={targets}
+                    onToggle={handleToggle}
+                    onDelete={handleDelete}
+                    onEdit={setEditingTarget}
+                />
+            )}
             {editingTarget && (
-                <div>
-                    <h3>Editing Website: {editingTarget.name}</h3>
+                <div
+                    className="target-modal-backdrop"
+                    aria-hidden="true"
+                />
+            )}
+            {editingTarget && (
+                <div className="target-edit-card">
+  <button
+    type="button"
+    className="target-modal-close"
+    onClick={() => setEditingTarget(null)}
+    aria-label="Close edit form"
+  >
+    ×
+  </button>
+
+  <h3>Editing Website: {editingTarget.name}</h3>
 
                     <div>
                         <label>Website Name:</label>
@@ -186,37 +217,6 @@ onTargetsChanged();
                                 })
                             }
                         />
-                        <div>
-                            <label>Interval (seconds):</label>
-                            <input
-                                type="number"
-                                min="10"
-                                step="1"
-                                value={editingTarget.interval_seconds}
-                                onChange={(e) =>
-                                    setEditingTarget({
-                                        ...editingTarget,
-                                        interval_seconds: e.target.value
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <div>
-                            <label>Threshold (ms):</label>
-                            <input
-                                type="number"
-                                min="1"
-                                step="1"
-                                value={editingTarget.threshold_ms}
-                                onChange={(e) =>
-                                    setEditingTarget({
-                                        ...editingTarget,
-                                        threshold_ms: e.target.value
-                                    })
-                                }
-                            />
-                        </div>
                     </div>
 
                     <div>
@@ -232,70 +232,60 @@ onTargetsChanged();
                             }
                         />
                     </div>
+
+                    <div>
+                        <label>Interval (seconds):</label>
+                        <input
+                            type="number"
+                            min="10"
+                            step="1"
+                            value={editingTarget.interval_seconds}
+                            onChange={(e) =>
+                                setEditingTarget({
+                                    ...editingTarget,
+                                    interval_seconds: e.target.value
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div>
+                        <label>Threshold (ms):</label>
+                        <input
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={editingTarget.threshold_ms}
+                            onChange={(e) =>
+                                setEditingTarget({
+                                    ...editingTarget,
+                                    threshold_ms: e.target.value
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div>
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                        >
+                            Save Changes
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setEditingTarget(null)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
-
             )}
-            {loading && <p>Loading websites...</p>}
-
-            {error && <p>{error}</p>}
-
-            {!loading && !error && targets.length === 0 && (
-                <p>No websites found.</p>
-            )}
-
-            {!loading && !error && targets.map((target) => (
-                <div key={target.id}>
-
-                    <h3>{target.name}</h3>
-
-                    <p>URL: {target.url}</p>
-
-                    <p>Status: {target.current_status}</p>
-
-                    <p>
-                        Monitoring: {target.enabled === 1 ? "Enabled" : "Disabled"}
-                    </p>
-
-                    <button
-                        type="button"
-                        onClick={() => handleToggle(target.id, target.enabled)}
-                    >
-                        {target.enabled === 1 ? "Disable" : "Enable"}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => handleDelete(target.id, target.name)}
-                    >
-                        Delete
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setEditingTarget(target)}
-                    >
-                        Edit
-                    </button>
-                    {editingTarget && editingTarget.id === target.id && (
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handleSave}
-                            >
-                                Save Changes
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => setEditingTarget(null)}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    )}
-
-                </div>
-            ))}
         </div>
     );
 }
 
 export default TargetList;
+
+
