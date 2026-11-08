@@ -6,7 +6,7 @@ const errorHandler = require("./middlewares/errorMiddleware");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const targetRoutes = require("./routes/targetRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-
+const reportRoutes = require("./routes/reportRoutes");
 const {
     startMonitoringScheduler
 } = require("./scheduler/monitoringScheduler");
@@ -27,6 +27,7 @@ app.use(express.json());
 app.use("/api/targets", targetRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+ app.use("/api/reports", reportRoutes);
 
 // Root Route
 app.get("/", (req, res) => {

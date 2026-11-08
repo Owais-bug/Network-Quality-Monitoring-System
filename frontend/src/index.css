@@ -1210,11 +1210,669 @@ html[data-theme="light"] .add-website-trigger {
   }
 }
 
+/* ==================================
+   INCIDENTS PAGE - PHASE 10
+   ================================== */
+
+.incidents-page {
+  --incident-panel: #ffffff;
+  --incident-border: #e2e8f0;
+  --incident-muted: #64748b;
+
+  width: 100%;
+  min-width: 0;
+}
+
+[data-theme="dark"] .incidents-page {
+  --incident-panel: #101318;
+  --incident-border: #29313a;
+  --incident-muted: #9ca9b8;
+}
+
+/* Page Heading */
+.incidents-page h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.incidents-page > p {
+  color: var(--incident-muted);
+  margin-bottom: 20px;
+}
+
+/* Filter Panel */
+.incident-filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+
+  padding: 20px;
+  margin-bottom: 20px;
+
+  background: var(--incident-panel);
+  border: 1px solid var(--incident-border);
+  border-radius: 10px;
+}
+
+/* Labels */
+.incident-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+/* Dropdowns and Date Inputs */
+.incident-filters select,
+.incident-filters input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  background: var(--incident-panel);
+  color: var(--text-h);
+
+  border: 1px solid var(--incident-border);
+  border-radius: 6px;
+
+  padding: 11px 12px;
+  font-size: 13px;
+}
+
+[data-theme="dark"] .incident-filters input {
+  color-scheme: dark;
+}
+
+/* Clear Filters Button */
+.incident-filters > button {
+  background: transparent;
+  color: var(--text-h);
+
+  border: 1px solid var(--incident-border);
+  border-radius: 6px;
+
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.incident-filters > button:hover {
+  border-color: #60a5fa;
+}
+
+/* Responsive Filters */
+@media (max-width: 1100px) {
+  .incident-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .incident-filters {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+}
+
+/* Incident Severity Badges */
+.incident-severity {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* CRITICAL - Red */
+.incident-severity--critical {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* WARNING - Amber */
+.incident-severity--warning {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Incident Event Type Badges */
+.incident-event-type {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* SLOW - Amber */
+.incident-event-type--slow {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* DOWN - Red */
+.incident-event-type--down {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Event Type - Colored Text Only */
+.incident-event-type {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.incident-event-type--slow {
+  color: #f59e0b;
+  background: transparent;
+  border: none;
+}
+
+.incident-event-type--down {
+  color: #ef4444;
+  background: transparent;
+  border: none;
+}
+
+/* Incident Filters - Larger Fonts */
+
+/* Filter Labels */
+.incident-filters label {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* Dropdowns and Date Inputs */
+.incident-filters select,
+.incident-filters input {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+/* Clear Filters Button */
+.incident-filters > button {
+  font-size: 16px;
+  font-weight: 600;
+  color: #040c36;
+}
 
 
+/* ===================================
+   INCIDENTS TABLE - FONT IMPROVEMENT
+   =================================== */
+
+/* Table Headings */
+.incidents-page .targets-table th {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  line-height: 1.5;
+}
+
+/* Table Data */
+.incidents-page .targets-table td {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+/* Website Names */
+.incidents-page .targets-table td:first-child {
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--text-h);
+}
+
+/* Event Type: SLOW / DOWN */
+.incidents-page .incident-event-type {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+}
+
+/* Severity: CRITICAL / WARNING */
+.incidents-page .incident-severity {
+  font-size: 14px;
+  font-weight: 00;
+  letter-spacing: 0.2px;
+}
+
+/* Status: Open / Resolved */
+.incidents-page .incident-status {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Consistent Table Spacing */
+.incidents-page .targets-table th,
+.incidents-page .targets-table td {
+  padding: 16px 15px;
+}
 
 
+/* Incidents Table - Header Colors */
+.incidents-page .targets-table thead {
+  background: #1e293b;
+}
+
+.incidents-page .targets-table th {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+/* =====================================
+   COOL MATTE LIGHT THEME — OPTION A
+   ===================================== */
+
+/* Main Background */
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] .app-layout {
+  background-color: #e9edf0;
+}
+
+/* Sidebar */
+html[data-theme="light"] .sidebar {
+  background-color: #e4e9ed;
+  border-color: #d5dde3;
+}
+
+/* Incidents Filter Panel */
+html[data-theme="light"] .incidents-page {
+  --incident-panel: #f3f5f6;
+  --incident-border: #d5dde3;
+}
+
+/* Monitors Detail Cards */
+html[data-theme="light"] .target-details {
+  --detail-panel: #f3f5f6;
+  --detail-border: #d5dde3;
+}
+
+/* Table Rows */
+html[data-theme="light"] .targets-table tbody td {
+  background-color: #f3f5f6;
+  border-color: #d5dde3;
+}
 
 
+/* Incidents Page - Larger Heading */
+.incidents-page h1 {
+  font-size: 45px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+/* Incidents Description */
+.incidents-page > p:first-of-type {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* Consistent Headings - Overview & Monitors */
+#overview > h1,
+#monitors > h1 {
+  font-size: 45px;
+  font-weight: 750;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+/* Overview Description */
+#overview > p {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+/* Responsive Headings */
+@media (max-width: 600px) {
+  #overview > h1,
+  #monitors > h1,
+  .incidents-page h1 {
+    font-size: 30px;
+  }
+}
 
 
+/* =====================================
+   INCIDENTS - TABLE ROW HOVER ANIMATION
+   ===================================== */
+
+/* Smooth row transition */
+.incidents-page .targets-table tbody td {
+  transition:
+    background-color 220ms ease,
+    padding 220ms ease;
+}
+
+/* LIGHT MODE - Soft Cool Matte Highlight */
+html[data-theme="light"]
+.incidents-page .targets-table tbody tr:hover td {
+  background-color: #dce5ed;
+}
+
+/* DARK MODE - Subtle Highlight */
+html[data-theme="dark"]
+.incidents-page .targets-table tbody tr:hover td {
+  background-color: #1b2630;
+}
+
+/* Slight slide effect */
+.incidents-page .targets-table tbody tr:hover td:first-child {
+  padding-left: 19px;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .incidents-page .targets-table tbody td {
+    transition: none;
+  }
+}
+
+/* =====================================
+   OVERVIEW - GROUP BLUR REVEAL
+   ===================================== */
+
+/* All 5 cards animate together */
+#overview .summary-group-motion {
+  width: 100%;
+  animation: summaryBlurReveal 850ms ease-out both;
+}
+
+@keyframes summaryBlurReveal {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Slightly bigger summary cards */
+#overview .summary-group-motion > div > * {
+  min-height: 140px;
+  box-sizing: border-box;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #overview .summary-group-motion {
+    animation: none;
+  }
+}
+
+/* =====================================
+   SUMMARY CARDS - SIZE + ANIMATION FIX
+   ===================================== */
+
+/* Prevent duplicate animation on old wrapper */
+#overview .summary-group-motion {
+  animation: none;
+}
+
+/* Animate all 5 cards as one group */
+#overview .summary-cards {
+  animation: nqGroupBlurReveal 1000ms ease-out both;
+}
+
+@keyframes nqGroupBlurReveal {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* Increase size of all 5 cards */
+#overview .summary-cards > .summary-card {
+  min-height: 155px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #overview .summary-cards {
+    animation: none;
+  }
+}
+
+
+/* Temporary Reports CSS Test */
+.reports-page form {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 20px !important;
+  padding: 25px !important;
+  border: 2px solid #60a5fa !important;
+  border-radius: 12px !important;
+  max-width: 900px !important;
+}
+
+
+/* =====================================
+   REPORTS - DESIGN A: SPLIT PANEL
+   ===================================== */
+
+/* Light Theme - Cool Matte */
+.reports-page .reports-split-layout {
+  --split-bg: #f3f5f6;
+  --split-side: #e4e9ed;
+  --split-field: #e9edf0;
+  --split-border: #d5dde3;
+  --split-text: #202d39;
+  --split-muted: #647586;
+
+  display: grid;
+  grid-template-columns: 35% minmax(0, 1fr);
+  width: 100%;
+  max-width: 1100px;
+  border: 1px solid var(--split-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Dark Theme */
+html[data-theme="dark"] .reports-page .reports-split-layout {
+  --split-bg: #11151a;
+  --split-side: #171d24;
+  --split-field: #151a20;
+  --split-border: #29313a;
+  --split-text: #f5f6f7;
+  --split-muted: #9ca9b8;
+}
+
+/* Left Information Panel */
+.reports-page .reports-info-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+
+  background: var(--split-side);
+  border-right: 1px solid var(--split-border);
+  padding: 30px;
+}
+
+.reports-page .reports-info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+
+  background: rgba(96, 165, 250, 0.12);
+  color: #6086c2;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.reports-page .reports-info-panel h2 {
+  font-size: 23px;
+  font-weight: 750;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--split-text);
+}
+
+.reports-page .reports-info-panel p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--split-muted);
+  margin: 0;
+}
+
+.reports-page .reports-info-panel span {
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--split-muted);
+}
+
+/* Right Export Form */
+.reports-page .reports-split-layout > form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 30px;
+
+  background: var(--split-bg);
+  border: none;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+/* Form Fields */
+.reports-page .reports-split-layout form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.reports-page .reports-split-layout label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--split-text);
+}
+
+/* Inputs and Dropdowns */
+.reports-page .reports-split-layout select,
+.reports-page .reports-split-layout input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+
+  padding: 11px 13px;
+  background: var(--split-field);
+  color: var(--split-text);
+  border: 1px solid var(--split-border);
+  border-radius: 7px;
+
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Download Button */
+.reports-page .reports-split-layout form > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+
+  width: auto;
+  padding: 13px 25px;
+
+  background: #1e293b;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reports-page .reports-split-layout form > button:hover {
+  background: #334155;
+}
+
+/* Focus and Errors */
+.reports-page .reports-split-layout
+:is(input, select):focus-visible {
+  outline: 2px solid #6086c2;
+  outline-offset: 2px;
+}
+
+.reports-page .reports-split-layout form > p[role="alert"] {
+  grid-column: 1 / -1;
+  color: #ef4444;
+}
+
+html[data-theme="dark"]
+.reports-page input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Responsive Layout */
+@media (max-width: 800px) {
+  .reports-page .reports-split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-page .reports-info-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--split-border);
+  }
+}
+
+@media (max-width: 550px) {
+  .reports-page .reports-split-layout > form {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .reports-page .reports-info-panel {
+    padding: 20px;
+  }
+}

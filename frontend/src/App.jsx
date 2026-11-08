@@ -1,30 +1,70 @@
 
 import { useState, useEffect } from "react";
-
+import TypingHeading from "./components/TypingHeading";
 import Sidebar from "./components/Sidebar";
 import TargetForm from "./components/TargetForm";
 import TargetList from "./components/TargetList";
 import Navbar from "./components/Navbar";
 import SummaryCards from "./components/SummaryCards";
-
+import Incidents from "./components/Incidents";
+import Reports from "./components/Reports";
 function App() {
   const [refreshCount, setRefreshCount] = useState(0);
-    const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
   const [summaryError, setSummaryError] = useState(null);
 
+  // Track selected sidebar page
+  
+const getActivePage = () => {
+  const page = window.location.hash.replace("#", "");
+
+  return ["overview", "monitors", "reports", "incidents"].includes(page)
+    ? page
+    : "overview";
+};
+
+const [activePage, setActivePage] = useState(getActivePage);
+
+
+  // Handle sidebar navigation
+  useEffect(() => {
+    const handleNavigation = () => {
+     setActivePage(getActivePage());
+    };
+
+    window.addEventListener("hashchange", handleNavigation);
+
+    return () => {
+      window.removeEventListener(
+        "hashchange",
+        handleNavigation
+      );
+    };
+  }, []);
+
+  // Refresh dashboard and targets
   const refreshTargets = () => {
     setRefreshCount((count) => count + 1);
   };
+  
+/* Automatic Dashboard Refresh - Every 60 Seconds */
+useEffect(() => {
+  const interval = setInterval(() => {
+    setRefreshCount((count) => count + 1);
+  }, 60000);
 
-  // Remember selected theme
+  return () => clearInterval(interval);
+}, []);
+
+
+  // Theme state
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("nq-theme") === "dark"
       ? "dark"
       : "light";
   });
 
-  // Apply theme and save preference
   useEffect(() => {
     document.documentElement.setAttribute(
       "data-theme",
@@ -34,8 +74,10 @@ function App() {
     localStorage.setItem("nq-theme", theme);
   }, [theme]);
 
-
+  // Fetch dashboard summary
   useEffect(() => {
+     setSummaryLoading(true);
+  setSummaryError(null);
     fetch("http://localhost:5000/api/dashboard/summary")
       .then((response) => {
         if (!response.ok) {
@@ -45,19 +87,21 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        console.log("Dashboard Summary:", data.summary);
         setSummary(data.summary);
+        setSummaryError(null);
       })
       .catch((error) => {
         console.error("Summary API Error:", error);
-         setSummaryError("Unable to load dashboard summary.");
+        setSummaryError(
+          "Unable to load dashboard summary."
+        );
       })
       .finally(() => {
         setSummaryLoading(false);
       });
   }, [refreshCount]);
 
-  // Switch between Light and Dark
+  // Toggle Dark / Light Mode
   const toggleTheme = () => {
     setTheme((currentTheme) =>
       currentTheme === "light" ? "dark" : "light"
@@ -65,35 +109,64 @@ function App() {
   };
 
   return (
+    
     <div className="app-layout">
 
       <Sidebar />
 
-      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+      <Navbar
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
 
-      <h1>Network Quality Monitoring System</h1>
-      <p>Welcome to our React Dashboard!</p>
-     
-{summaryError ? (
-  <div className="summary-error" role="alert">
-    <strong>Dashboard Summary Unavailable</strong>
-    <p>{summaryError}</p>
-  </div>
-) : (
-  <SummaryCards
-    summary={summary}
-    loading={summaryLoading}
-  />
+      {/* OVERVIEW PAGE */}
+      {activePage === "overview" && (
+        <section id="overview">
+          
+<TypingHeading text="Network Quality Monitoring System." />
+
+          <p>Network Performance Overview</p>
+
+          {summaryError ? (
+            <div className="summary-error" role="alert">
+              <strong>Dashboard Summary Unavailable</strong>
+              <p>{summaryError}</p>
+            </div>
+          ) : (
+            <SummaryCards
+              summary={summary}
+              loading={summaryLoading}
+            />
+          )}
+        </section>
+      )}
+
+      {/* MONITORS PAGE */}
+      {activePage === "monitors" && (
+        <section id="monitors">
+          
+<TypingHeading text="Monitors." />
+
+
+          <TargetForm onTargetAdded={refreshTargets} />
+
+          <TargetList
+            refreshCount={refreshCount}
+            onTargetsChanged={refreshTargets}
+          />
+        </section>
+      )}
+
+{/* INCIDENTS PAGE */}
+{activePage === "incidents" && (
+  <Incidents />
+  
 )}
 
-
-      <TargetForm onTargetAdded={refreshTargets} />
-
-      <section id="monitors">
-        <TargetList refreshCount={refreshCount} 
-        onTargetsChanged={refreshTargets}/>
-      </section>
-
+{/* REPORTS PAGE */}
+{activePage === "reports" && (
+  <Reports />
+)}
 
 
     </div>
