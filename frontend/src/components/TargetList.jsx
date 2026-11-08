@@ -1,12 +1,15 @@
 import TargetTable from "./TargetTable";
 import { useState, useEffect } from "react";
-
+import TargetDetails from "./TargetDetails";
 function TargetList({ refreshCount, onTargetsChanged }) {
 
     const [targets, setTargets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [editingTarget, setEditingTarget] = useState(null);
+
+    const [selectedTargetId, setSelectedTargetId] = useState(null);
+
 
     // Fetch all targets from backend
     useEffect(() => {
@@ -166,6 +169,15 @@ function TargetList({ refreshCount, onTargetsChanged }) {
         }
     };
 
+    if (selectedTargetId !== null) {
+        return (
+            <TargetDetails
+                targetId={selectedTargetId}
+                onBack={() => setSelectedTargetId(null)}
+            />
+        );
+    }
+
     return (
         <div>
             <h2>Monitored Websites</h2>
@@ -184,6 +196,7 @@ function TargetList({ refreshCount, onTargetsChanged }) {
                     onToggle={handleToggle}
                     onDelete={handleDelete}
                     onEdit={setEditingTarget}
+                    onViewDetails={setSelectedTargetId}
                 />
             )}
             {editingTarget && (
@@ -194,16 +207,16 @@ function TargetList({ refreshCount, onTargetsChanged }) {
             )}
             {editingTarget && (
                 <div className="target-edit-card">
-  <button
-    type="button"
-    className="target-modal-close"
-    onClick={() => setEditingTarget(null)}
-    aria-label="Close edit form"
-  >
-    ×
-  </button>
+                    <button
+                        type="button"
+                        className="target-modal-close"
+                        onClick={() => setEditingTarget(null)}
+                        aria-label="Close edit form"
+                    >
+                        ×
+                    </button>
 
-  <h3>Editing Website: {editingTarget.name}</h3>
+                    <h3>Editing Website: {editingTarget.name}</h3>
 
                     <div>
                         <label>Website Name:</label>

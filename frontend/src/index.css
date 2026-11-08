@@ -702,5 +702,519 @@ html[data-theme="light"] .target-edit-card label {
 }
 
 
+/* Add Website Form */
+.target-form-card {
+  max-width: 700px;
+  margin: 24px 0;
+  padding: 24px;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* Form Heading */
+.target-form-card h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--text-h);
+}
+
+/* Form Description */
+.target-form-card > p {
+  color: var(--text);
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+
+/* Field Spacing */
+.target-form-card form > div {
+  margin-bottom: 16px;
+}
+
+/* Field Labels */
+.target-form-card label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text-h);
+}
+
+/* White Labels in Dark Theme */
+html[data-theme="dark"] .target-form-card label {
+  color: #ffffff;
+}
+
+/* Input Fields */
+.target-form-card input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  background: var(--bg);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Focus State */
+.target-form-card input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Submit Button */
+.target-form-card button[type="submit"] {
+  padding: 11px 20px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Disabled Button */
+.target-form-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Minimal Add Website Form Typography */
+.target-form-card h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0 0 8px;
+  color: var(--text-h);
+}
+
+.target-form-card > p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0 0 26px;
+  color: var(--text);
+}
+
+/* Add Website Center Modal */
+.add-website-section .target-form-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+
+  margin: 0;
+  box-sizing: border-box;
+  z-index: 1002;
+}
+
+
+
+
+/* Add Website Modal - Transparent Inputs */
+.add-website-section .target-form-card input {
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+/* Input Placeholder */
+.add-website-section .target-form-card input::placeholder {
+  color: var(--text);
+  opacity: 0.65;
+}
+
+/* Focus Style */
+.add-website-section .target-form-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+/* Add Website Button - Dark Charcoal */
+.add-website-section .target-form-card button[type="submit"] {
+  background: #1f2937;
+  color: #ffffff;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+
+/* Main Add Website Button */
+.add-website-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  margin: 18px 0;
+
+  background: #f5f5f5;
+  color: #111111;
+  border: 1px solid #f5f5f5;
+  border-radius: 7px;
+
+  font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Light Theme */
+html[data-theme="light"] .add-website-trigger {
+  background: #171717;
+  color: #ffffff;
+  border-color: #171717;
+}
+
+/* Keyboard Focus */
+.add-website-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+
+/* Add Website Modal - Smooth Fade & Pop */
+@keyframes addWebsiteModalOpen {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 16px)) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.add-website-section .target-form-card {
+  animation: addWebsiteModalOpen 320ms
+    cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Accessibility: Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .add-website-section .target-form-card {
+    animation: none;
+  }
+}
+
+/* Add Website - Background Fade Animation */
+@keyframes addWebsiteBackdropFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.add-website-section .target-modal-backdrop {
+  animation: addWebsiteBackdropFade 320ms ease-out both;
+}
+
+/* Accessibility - Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .add-website-section .target-modal-backdrop {
+    animation: none;
+  }
+}
+
+
+/* Minimal Table Action Buttons */
+.targets-table td:last-child button {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+
+  padding: 0;
+  margin-right: 14px;
+
+  color: var(--text-h);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Hover: Simple Underline */
+.targets-table td:last-child button:hover {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Delete Action */
+.targets-table td:last-child button:last-child {
+  color: #ef4444;
+  margin-right: 0;
+}
+
+.targets-table td:last-child button:last-child:hover {
+  color: #dc2626;
+}
+
+/* Keyboard Accessibility */
+.targets-table td:last-child button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Option A - Smooth Underline Reveal */
+.targets-table td:last-child button {
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+/* Hidden Underline */
+.targets-table td:last-child button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+}
+
+/* Reveal Underline on Hover */
+.targets-table td:last-child button:hover::after,
+.targets-table td:last-child button:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Disable motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .targets-table td:last-child button::after {
+    transition: none;
+  }
+}
+
+/* Larger Table Action Text */
+.targets-table td:last-child button {
+  font-size: 17px;
+  font-weight: 600;
+  margin-right: 16px;
+  white-space: nowrap;
+}
+
+/* Keep Delete Aligned */
+.targets-table td:last-child button:last-child {
+  margin-right: 0;
+}
+
+
+/* Add Website Modal - Cancel Button */
+.add-website-section .target-form-card form > button[type="button"] {
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 11px 20px;
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Minimal Hover */
+.add-website-section .target-form-card form > button[type="button"]:hover {
+  border-color: var(--text);
+}
+
+/* Keyboard Focus */
+.add-website-section .target-form-card form > button[type="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ==================================
+   TARGET DETAILS - PHASE 10
+   ================================== */
+
+.target-details {
+  --detail-panel: #ffffff;
+  --detail-border: #e2e8f0;
+  --detail-muted: #64748b;
+
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--text-h);
+}
+
+[data-theme="dark"] .target-details {
+  --detail-panel: #101318;
+  --detail-border: #29313a;
+  --detail-muted: #9ca9b8;
+}
+
+/* Back Button */
+.target-details > button {
+  background: transparent;
+  border: none;
+  color: var(--detail-muted);
+  padding: 8px 0;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.target-details > button:hover {
+  color: var(--text-h);
+  text-decoration: underline;
+}
+
+/* Website Header */
+.target-details-header {
+  margin-bottom: 24px;
+}
+
+.target-details-header h2 {
+  font-size: 26px;
+  margin: 0 0 8px;
+}
+
+.target-details-header p {
+  color: var(--detail-muted);
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+}
+
+/* Summary Metrics */
+.target-details-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.target-details-metrics > div {
+  background: var(--detail-panel);
+  border: 1px solid var(--detail-border);
+  border-radius: 9px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.target-details-metrics p {
+  color: var(--detail-muted);
+  font-size: 12px;
+  margin: 0 0 12px;
+}
+
+.target-details-metrics h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Graph and History Cards */
+.target-history-chart,
+.target-check-history {
+  background: var(--detail-panel);
+  border: 1px solid var(--detail-border);
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.target-history-chart h3,
+.target-check-history h3 {
+  font-size: 17px;
+  margin: 0 0 20px;
+}
+
+/* Graph Time Filters */
+.chart-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chart-filters button {
+  background: transparent;
+  color: var(--detail-muted);
+  border: 1px solid var(--detail-border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chart-filters button[aria-pressed="true"] {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.chart-filters button:hover {
+  border-color: #60a5fa;
+}
+
+.target-history-chart svg {
+  display: block;
+  width: 100%;
+}
+
+/* History Table */
+.target-check-history .target-table-container {
+  overflow-x: auto;
+}
+
+.target-check-history .targets-table {
+  width: 100%;
+}
+
+/* Responsive Layout */
+@media (max-width: 1000px) {
+  .target-details-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .target-details-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .target-history-chart,
+  .target-check-history {
+    padding: 15px;
+  }
+}
+
+
+
+
+
+
+
 
 
