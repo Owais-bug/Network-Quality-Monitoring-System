@@ -42,4 +42,41 @@ const getTargetHistory = async (targetId, limit = 50) => {
 };
 
 
-module.exports = { saveCheckResult ,   getTargetHistory };
+const getTargetAvailability = async (
+  targetId,
+  fromDate,
+  toDate
+) => {
+  const [rows] = await pool.query(
+    `SELECT
+       COUNT(*) AS total_checks,
+       COALESCE(
+         SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END),
+         0
+       ) AS successful_checks
+     FROM check_results
+     WHERE target_id = ?
+       AND checked_at >= ?
+       AND checked_at < ?`,
+    [targetId, fromDate, toDate]
+  );
+
+  const totalChecks = Number(rows[0].total_checks);
+  const successfulChecks = Number(rows[0].successful_checks);
+
+  const availabilityPercent =
+    totalChecks === 0
+      ? null
+      : Number(
+          ((successfulChecks / totalChecks) * 100).toFixed(2)
+        );
+
+  return {
+    totalChecks,
+    successfulChecks,
+    failedChecks: totalChecks - successfulChecks,
+    availabilityPercent
+  };
+};
+
+module.exports = { saveCheckResult ,   getTargetHistory ,  getTargetAvailability };

@@ -8,48 +8,102 @@ function TargetDetails({ targetId, onBack }) {
   const [error, setError] = useState("");
   const [range, setRange] = useState("24H");
 
+  const [availability, setAvailability] = useState(null);
+  const [availabilityLoading, setAvailabilityLoading] = useState(true);
+  const [availabilityError, setAvailabilityError] = useState("");
+  
+useEffect(() => {
+  const controller = new AbortController();
+
+  const loadDetails = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const [targetResponse, historyResponse] =
+        await Promise.all([
+          fetch(`/api/targets/${targetId}`, {
+            signal: controller.signal,
+          }),
+          fetch(`/api/targets/${targetId}/history?limit=500`, {
+            signal: controller.signal,
+          }),
+        ]);
+
+      if (!targetResponse.ok || !historyResponse.ok) {
+        throw new Error("Unable to load target details.");
+      }
+
+      const targetData = await targetResponse.json();
+      const historyData = await historyResponse.json();
+
+      if (!controller.signal.aborted) {
+        setTarget(targetData);
+        setHistory(historyData.history || []);
+      }
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        setError(err.message);
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setLoading(false);
+      }
+    }
+  };
+
+  loadDetails();
+
+  return () => controller.abort();
+}, [targetId]);
+
+
+
   useEffect(() => {
     const controller = new AbortController();
 
-    const loadDetails = async () => {
+    const loadAvailability = async () => {
+      setAvailabilityLoading(true);
+      setAvailabilityError("");
+      setAvailability(null);
+
       try {
-        setLoading(true);
-        setError("");
+        const hours = {
+          "1H": 1,
+          "24H": 24,
+          "7D": 168,
+        }[range];
 
-        const [targetResponse, historyResponse] =
-          await Promise.all([
-            fetch(`/api/targets/${targetId}`, {
-              signal: controller.signal,
-            }),
-            fetch(`/api/targets/${targetId}/history?limit=500`, {
-              signal: controller.signal,
-            }),
-          ]);
+        const response = await fetch(
+          `/api/targets/${targetId}/availability?hours=${hours}`,
+          { signal: controller.signal }
+        );
 
-        if (!targetResponse.ok || !historyResponse.ok) {
-          throw new Error("Unable to load target details.");
+        if (!response.ok) {
+          throw new Error("Unable to load availability.");
         }
 
-        const targetData = await targetResponse.json();
-        const historyData = await historyResponse.json();
+        const data = await response.json();
 
-        setTarget(targetData);
-        setHistory(historyData.history || []);
+        if (!controller.signal.aborted) {
+          setAvailability(data);
+        }
       } catch (err) {
         if (err.name !== "AbortError") {
-          setError(err.message);
+          setAvailabilityError(err.message);
         }
       } finally {
         if (!controller.signal.aborted) {
-          setLoading(false);
+          setAvailabilityLoading(false);
         }
       }
     };
 
-    loadDetails();
+    loadAvailability();
 
     return () => controller.abort();
-  }, [targetId]);
+  }, [targetId, range]);
+
 
   if (loading) {
     return <p>Loading target details...</p>;
@@ -164,6 +218,62 @@ function TargetDetails({ targetId, onBack }) {
         </div>
       </div>
 
+      <div className="target-availability-card">
+        <div className="availability-header">
+          <h3>Website Availability</h3>
+          <span>{range}</span>
+        </div>
+
+        {availabilityLoading ? (
+          <p>Loading availability...</p>
+        ) : availabilityError ? (
+          <p role="alert">{availabilityError}</p>
+        ) : availability?.availabilityPercent == null ? (
+          <p>No monitoring checks available for this period.</p>
+        ) : (
+          <>
+            <h2 className="availability-percentage">
+              {Number(availability.availabilityPercent).toFixed(2)}%
+            </h2>
+
+            <p>Successful monitoring checks</p>
+
+            <div
+              className="availability-progress"
+              role="progressbar"
+              aria-label="Website availability"
+              aria-valuenow={availability.availabilityPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="availability-progress-fill"
+                style={{
+                  width: `${availability.availabilityPercent}%`,
+                }}
+              />
+            </div>
+
+            <div className="availability-stats">
+              <div>
+                <span>Total Checks</span>
+                <strong>{availability.totalChecks}</strong>
+              </div>
+
+              <div>
+                <span>Successful</span>
+                <strong>{availability.successfulChecks}</strong>
+              </div>
+
+              <div>
+                <span>Failed</span>
+                <strong>{availability.failedChecks}</strong>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
       <div className="target-history-chart">
         <h3>Response-Time History</h3>
 
@@ -214,7 +324,7 @@ function TargetDetails({ targetId, onBack }) {
                   145 -
                   (Number(chartData[0].response_time_ms) /
                     maxResponse) *
-                    125
+                  125
                 }
                 r="5"
                 fill="#60a5fa"

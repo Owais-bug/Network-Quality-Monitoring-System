@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar";
 import SummaryCards from "./components/SummaryCards";
 import Incidents from "./components/Incidents";
 import Reports from "./components/Reports";
+import OverviewHealth from "./components/OverviewHealth";
+import OverviewWebsites from "./components/OverviewWebsites";
 function App() {
   const [refreshCount, setRefreshCount] = useState(0);
   const [summary, setSummary] = useState(null);
@@ -15,22 +17,22 @@ function App() {
   const [summaryError, setSummaryError] = useState(null);
 
   // Track selected sidebar page
-  
-const getActivePage = () => {
-  const page = window.location.hash.replace("#", "");
 
-  return ["overview", "monitors", "reports", "incidents"].includes(page)
-    ? page
-    : "overview";
-};
+  const getActivePage = () => {
+    const page = window.location.hash.replace("#", "");
 
-const [activePage, setActivePage] = useState(getActivePage);
+    return ["overview", "monitors", "reports", "incidents"].includes(page)
+      ? page
+      : "overview";
+  };
+
+  const [activePage, setActivePage] = useState(getActivePage);
 
 
   // Handle sidebar navigation
   useEffect(() => {
     const handleNavigation = () => {
-     setActivePage(getActivePage());
+      setActivePage(getActivePage());
     };
 
     window.addEventListener("hashchange", handleNavigation);
@@ -47,15 +49,15 @@ const [activePage, setActivePage] = useState(getActivePage);
   const refreshTargets = () => {
     setRefreshCount((count) => count + 1);
   };
-  
-/* Automatic Dashboard Refresh - Every 60 Seconds */
-useEffect(() => {
-  const interval = setInterval(() => {
-    setRefreshCount((count) => count + 1);
-  }, 60000);
 
-  return () => clearInterval(interval);
-}, []);
+  /* Automatic Dashboard Refresh - Every 60 Seconds */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshCount((count) => count + 1);
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
 
   // Theme state
@@ -76,8 +78,8 @@ useEffect(() => {
 
   // Fetch dashboard summary
   useEffect(() => {
-     setSummaryLoading(true);
-  setSummaryError(null);
+    setSummaryLoading(true);
+    setSummaryError(null);
     fetch("http://localhost:5000/api/dashboard/summary")
       .then((response) => {
         if (!response.ok) {
@@ -109,7 +111,7 @@ useEffect(() => {
   };
 
   return (
-    
+
     <div className="app-layout">
 
       <Sidebar />
@@ -122,8 +124,8 @@ useEffect(() => {
       {/* OVERVIEW PAGE */}
       {activePage === "overview" && (
         <section id="overview">
-          
-<TypingHeading text="Network Quality Monitoring System." />
+
+          <TypingHeading text="Network Quality Monitoring System." />
 
           <p>Network Performance Overview</p>
 
@@ -133,10 +135,23 @@ useEffect(() => {
               <p>{summaryError}</p>
             </div>
           ) : (
-            <SummaryCards
-              summary={summary}
-              loading={summaryLoading}
-            />
+  <>
+    <div className="summary-group-motion">
+      <SummaryCards
+        summary={summary}
+        loading={summaryLoading}
+      />
+    </div>
+
+    {!summaryLoading && !summaryError && (
+      <OverviewHealth summary={summary} />
+    )}
+    
+<OverviewWebsites refreshCount={refreshCount} />
+
+  </>
+
+
           )}
         </section>
       )}
@@ -144,8 +159,8 @@ useEffect(() => {
       {/* MONITORS PAGE */}
       {activePage === "monitors" && (
         <section id="monitors">
-          
-<TypingHeading text="Monitors." />
+
+          <TypingHeading text="Monitors." />
 
 
           <TargetForm onTargetAdded={refreshTargets} />
@@ -157,16 +172,16 @@ useEffect(() => {
         </section>
       )}
 
-{/* INCIDENTS PAGE */}
-{activePage === "incidents" && (
-  <Incidents />
-  
-)}
+      {/* INCIDENTS PAGE */}
+      {activePage === "incidents" && (
+        <Incidents />
 
-{/* REPORTS PAGE */}
-{activePage === "reports" && (
-  <Reports />
-)}
+      )}
+
+      {/* REPORTS PAGE */}
+      {activePage === "reports" && (
+        <Reports />
+      )}
 
 
     </div>

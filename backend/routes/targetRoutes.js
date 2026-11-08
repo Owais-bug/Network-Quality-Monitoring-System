@@ -9,11 +9,14 @@ const {
     toggleTarget,
     removeTarget,
     runTargetCheck,
-    getHistory
+    getHistory,
+        getAvailability
 } = require("../controllers/targetController");
 
 
 
+
+router.get("/:id/availability", getAvailability);
 
 router.get("/", getTargets);
 router.post("/", addTarget);
