@@ -1876,3 +1876,743 @@ html[data-theme="dark"]
     padding: 20px;
   }
 }
+
+
+/* ======================================
+   NQ MONITOR - PREMIUM SIDEBAR
+   ====================================== */
+
+/* Cool Matte Light Theme */
+.sidebar {
+  --side-bg: #f3f5f6;
+  --side-text: #20252c;
+  --side-muted: #747f8b;
+  --side-hover: #e5e9ed;
+  --side-active: #ffffff;
+  --side-border: #d5dde3;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 15px;
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  background: var(--side-bg);
+  border-right: 1px solid var(--side-border);
+}
+
+/* Dark Theme */
+html[data-theme="dark"] .sidebar {
+  --side-bg: #0d1117;
+  --side-text: #f3f5f7;
+  --side-muted: #95a2b0;
+  --side-hover: #1b242e;
+  --side-active: #202b37;
+  --side-border: #29313a;
+}
+
+/* Branding */
+.sidebar .sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.sidebar .sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+
+  background: #17191b;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sidebar .sidebar-brand-text {
+  min-width: 0;
+}
+
+.sidebar .sidebar-brand-text h2 {
+  margin: 0;
+  color: var(--side-text);
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.sidebar .sidebar-brand-text p {
+  margin: 4px 0 0;
+  color: var(--side-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* Search Box */
+.sidebar .sidebar-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 11px 13px;
+  background: var(--side-hover);
+  border-radius: 10px;
+  color: var(--side-muted);
+}
+
+.sidebar .sidebar-search input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--side-text);
+  font-size: 14px;
+}
+
+.sidebar .sidebar-search input::placeholder {
+  color: var(--side-muted);
+}
+
+/* Navigation List */
+.sidebar nav.sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* Navigation Links */
+.sidebar .sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 13px 14px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  background: transparent;
+  color: var(--side-muted);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.4;
+
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+/* Icons */
+.sidebar .sidebar-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 21px;
+  font-size: 19px;
+  color: inherit;
+}
+
+/* Hover */
+.sidebar a.sidebar-nav-link:hover {
+  background: var(--side-hover);
+  color: var(--side-text);
+}
+
+/* Active Page */
+.sidebar a.sidebar-nav-link.active {
+  background: var(--side-active);
+  color: var(--side-text);
+  border-color: var(--side-border);
+  font-weight: 650;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.035);
+}
+
+/* Keyboard Accessibility */
+.sidebar a.sidebar-nav-link:focus-visible {
+  outline: 2px solid #6a93d4;
+  outline-offset: 2px;
+}
+
+/* Settings at Bottom */
+.sidebar .sidebar-bottom {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--side-border);
+}
+
+.sidebar .sidebar-nav-disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.sidebar .sidebar-nav-disabled small {
+  margin-left: auto;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.sidebar .sidebar-no-results {
+  color: var(--side-muted);
+  font-size: 12px;
+  padding: 12px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar .sidebar-nav-link {
+    transition: none;
+  }
+}
+
+/* =====================================
+   SIDEBAR - FONT SIZE IMPROVEMENTS
+   ===================================== */
+
+/* NQ Monitor Heading */
+.sidebar .sidebar-brand-text h2 {
+  font-size: 19px;
+  font-weight: 750;
+}
+
+/* Brand Subtitle */
+.sidebar .sidebar-brand-text p {
+  font-size: 11px;
+}
+
+/* Search Input */
+.sidebar .sidebar-search input {
+  font-size: 15px;
+}
+
+/* Overview, Monitors, Incidents, Reports */
+.sidebar .sidebar-nav-link {
+  font-size: 16px;
+  font-weight: 550;
+}
+
+/* Navigation Icons */
+.sidebar .sidebar-nav-icon {
+  font-size: 21px;
+  width: 24px;
+}
+
+/* Active Item */
+.sidebar a.sidebar-nav-link.active {
+  font-weight: 700;
+}
+
+/* Logo */
+.sidebar .sidebar-logo {
+  font-size: 15px;
+}
+
+/* =====================================
+   OVERVIEW - BIGGER SUMMARY CARDS
+   ===================================== */
+
+/* Card Size */
+#overview .summary-card {
+  min-height: 180px;
+  padding: 28px;
+  box-sizing: border-box;
+}
+
+/* Card Labels */
+#overview .summary-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+
+/* Card Numbers */
+#overview .summary-card p {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  #overview .summary-card {
+    min-height: 145px;
+    padding: 20px;
+  }
+
+  #overview .summary-card p {
+    font-size: 30px;
+  }
+}
+
+
+/* ======================================
+   DESIGN C - NETWORK CONTROL CENTER
+   STEP 1: CARD LAYOUT
+   ====================================== */
+
+/* All Five Cards */
+#overview .summary-cards {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+/* Card Dimensions */
+#overview .summary-cards .summary-card {
+  min-width: 0;
+  width: auto;
+  min-height: 180px;
+  padding: 24px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* Featured Total Monitors - Light */
+html[data-theme="light"]
+#overview .summary-card:first-child {
+  background: linear-gradient(
+    135deg,
+    #d9e3ed,
+    #f3f5f6
+  );
+  border: 1px solid #b9c9d9;
+}
+
+/* Featured Total Monitors - Dark */
+html[data-theme="dark"]
+#overview .summary-card:first-child {
+  background: linear-gradient(
+    135deg,
+    #1c2939,
+    #101720
+  );
+  border: 1px solid #354963;
+}
+
+/* Make Total Monitors number prominent */
+#overview .summary-card:first-child p {
+  font-size: 48px;
+  font-weight: 800;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  #overview .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  #overview .summary-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================
+   OVERVIEW - INFRASTRUCTURE HEALTH
+   DESIGN B
+   ===================================== */
+
+/* Two Cards Layout */
+#overview .overview-health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  width: 100%;
+}
+
+/* Light Theme - Cool Matte */
+#overview .overview-health-card {
+  --health-bg: #f3f5f6;
+  --health-border: #d5dde3;
+  --health-text: #202d39;
+  --health-muted: #647586;
+
+  background: var(--health-bg);
+  border: 1px solid var(--health-border);
+  border-radius: 12px;
+  padding: 26px;
+  min-height: 245px;
+  box-sizing: border-box;
+}
+
+/* Dark Theme */
+html[data-theme="dark"] #overview .overview-health-card {
+  --health-bg: #11161c;
+  --health-border: #29323b;
+  --health-text: #f5f7fb;
+  --health-muted: #97a6b8;
+}
+
+/* Card Headings */
+#overview .overview-health-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--health-text);
+  margin: 0 0 22px;
+}
+
+/* Distribution Number */
+#overview .overview-health-card h2 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #10b981;
+  margin: 0 0 20px;
+}
+
+#overview .overview-health-card h2 span {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--health-muted);
+}
+
+/* Distribution Progress Bar */
+#overview .health-progress {
+  display: flex;
+  width: 100%;
+  height: 13px;
+  background: #64748b30;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+#overview .health-progress span {
+  display: block;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+#overview .health-up {
+  background: #10b981;
+}
+
+#overview .health-slow {
+  background: #f59e0b;
+}
+
+#overview .health-down {
+  background: #ef4444;
+}
+
+#overview .health-unknown {
+  background: #94a3b8;
+}
+
+/* Information Text */
+#overview .overview-health-card p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--health-muted);
+  margin: 0 0 12px;
+}
+
+#overview .overview-health-card p strong {
+  font-weight: 750;
+  color: var(--health-text);
+}
+
+/* Subtext */
+#overview .overview-health-card small {
+  display: block;
+  margin-top: 14px;
+  color: var(--health-muted);
+  font-size: 19px;
+}
+
+/* Monitoring Snapshot Rows */
+#overview .overview-health-card:nth-child(2) p {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--health-border);
+}
+
+/* Mobile Responsive */
+@media (max-width: 750px) {
+  #overview .overview-health-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #overview .overview-health-card {
+    min-height: auto;
+    padding: 20px;
+  }
+}
+
+/* Overview Health Cards - Increase Height */
+@media (min-width: 751px) {
+  #overview .overview-health-card {
+    min-height: 350px;
+    padding: 30px;
+  }
+}
+
+
+/* ==========================================
+   OVERVIEW WEBSITE CARDS — PREMIUM VERSION 2
+   ========================================== */
+
+/* Light Theme - Cool Matte */
+#overview .overview-websites {
+  --website-panel: #f3f5f6;
+  --website-card: #e9edf0;
+  --website-border: #d5dde3;
+  --website-text: #202d39;
+  --website-muted: #647586;
+
+  margin-top: 24px;
+  padding: 26px;
+  background: var(--website-panel);
+  border: 1px solid var(--website-border);
+  border-radius: 16px;
+}
+
+/* Dark Theme */
+html[data-theme="dark"] #overview .overview-websites {
+  --website-panel: #0d1014;
+  --website-card: #151c25;
+  --website-border: #293542;
+  --website-text: #f5f7fb;
+  --website-muted: #97a6b8;
+}
+
+/* Section Header */
+#overview .overview-websites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+#overview .overview-websites-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--website-text);
+}
+
+#overview .overview-websites-header a {
+  color: #60a5fa;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#overview .overview-websites-header a:hover {
+  text-decoration: underline;
+}
+
+/* Three Column Layout */
+#overview .overview-websites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+
+  animation: websiteCardsReveal 750ms ease-out both;
+}
+
+/* Premium Website Card */
+#overview .overview-website-card {
+  --status-color: #94a3b8;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  min-width: 0;
+  min-height: 285px;
+  padding: 23px;
+
+  background: var(--website-card);
+  border: 1px solid var(--website-border);
+  border-radius: 14px;
+
+  color: var(--website-text);
+  box-sizing: border-box;
+
+  transition:
+    transform 250ms ease,
+    box-shadow 250ms ease,
+    border-color 250ms ease;
+}
+
+/* Status Colors */
+#overview .overview-website-card--up {
+  --status-color: #10b981;
+}
+
+#overview .overview-website-card--slow {
+  --status-color: #f59e0b;
+}
+
+#overview .overview-website-card--down {
+  --status-color: #ef4444;
+}
+
+/* Top Accent */
+#overview .overview-website-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#overview .overview-website-accent {
+  width: 4px;
+  height: 27px;
+  border-radius: 5px;
+  background: var(--status-color);
+}
+
+#overview .overview-website-icon {
+  font-size: 24px;
+  color: var(--website-muted);
+}
+
+/* Website Name */
+#overview .overview-website-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--website-text);
+  overflow-wrap: anywhere;
+}
+
+/* Website Status */
+#overview .overview-website-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--status-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#overview .overview-website-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--status-color);
+}
+
+/* Large Response Time */
+#overview .overview-website-response {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+#overview .overview-website-response strong {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--website-text);
+}
+
+#overview .overview-website-response span {
+  font-size: 14px;
+  color: var(--website-muted);
+}
+
+/* Supporting Text */
+#overview .overview-website-card small {
+  font-size: 12px;
+  color: var(--website-muted);
+}
+
+/* Monitoring Footer */
+#overview .overview-website-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-top: auto;
+  padding-top: 16px;
+
+  border-top: 1px solid var(--website-border);
+  font-size: 13px;
+}
+
+#overview .overview-website-footer span {
+  color: var(--website-muted);
+}
+
+#overview .overview-website-footer strong {
+  color: var(--website-text);
+}
+
+/* Animation 1 - All Cards Appear Together */
+@keyframes websiteCardsReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation 2 - Smooth Hover Lift */
+#overview .overview-website-card:hover {
+  transform: translateY(-6px);
+  border-color: #6086c2;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+}
+
+/* Responsive Layout */
+@media (max-width: 1100px) {
+  #overview .overview-websites-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  #overview .overview-websites-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #overview .overview-websites {
+    padding: 16px;
+  }
+
+  #overview .overview-website-card {
+    min-height: 250px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #overview .overview-websites-grid {
+    animation: none;
+  }
+
+  #overview .overview-website-card {
+    transition: none;
+  }
+
+  #overview .overview-website-card:hover {
+    transform: none;
+  }
+}
