@@ -98,6 +98,13 @@ const addTarget = async (req, res, next) => {
         let parsedUrl;
 
         try {
+            if (
+                typeof url !== "string" ||
+                !url.trim() ||
+                url.length > 255
+            ) {
+                throw new Error("Invalid URL");
+            }
             parsedUrl = new URL(url);
 
             if (
@@ -513,54 +520,54 @@ const getHistory = async (req, res, next) => {
 };
 
 const getAvailability = async (req, res, next) => {
-  try {
-    const id = Number(req.params.id);
-    const hours = Number(req.query.hours ?? 24);
+    try {
+        const id = Number(req.params.id);
+        const hours = Number(req.query.hours ?? 24);
 
-    // Validate Target ID
-    if (!Number.isSafeInteger(id) || id <= 0) {
-      return res.status(400).json({
-        message: "Invalid target ID"
-      });
+        // Validate Target ID
+        if (!Number.isSafeInteger(id) || id <= 0) {
+            return res.status(400).json({
+                message: "Invalid target ID"
+            });
+        }
+
+        // Supported periods: 1H, 24H, 7D
+        if (![1, 24, 168].includes(hours)) {
+            return res.status(400).json({
+                message: "hours must be 1, 24, or 168"
+            });
+        }
+
+        const target = await getTargetById(id);
+
+        if (!target) {
+            return res.status(404).json({
+                message: "Target not found"
+            });
+        }
+
+        const toDate = new Date();
+
+        const fromDate = new Date(
+            toDate.getTime() - hours * 60 * 60 * 1000
+        );
+
+        const result = await getTargetAvailability(
+            id,
+            fromDate,
+            toDate
+        );
+
+        return res.status(200).json({
+            targetId: id,
+            targetName: target.name,
+            periodHours: hours,
+            ...result
+        });
+
+    } catch (error) {
+        next(error);
     }
-
-    // Supported periods: 1H, 24H, 7D
-    if (![1, 24, 168].includes(hours)) {
-      return res.status(400).json({
-        message: "hours must be 1, 24, or 168"
-      });
-    }
-
-    const target = await getTargetById(id);
-
-    if (!target) {
-      return res.status(404).json({
-        message: "Target not found"
-      });
-    }
-
-    const toDate = new Date();
-
-    const fromDate = new Date(
-      toDate.getTime() - hours * 60 * 60 * 1000
-    );
-
-    const result = await getTargetAvailability(
-      id,
-      fromDate,
-      toDate
-    );
-
-    return res.status(200).json({
-      targetId: id,
-      targetName: target.name,
-      periodHours: hours,
-      ...result
-    });
-
-  } catch (error) {
-    next(error);
-  }
 };
 
 
