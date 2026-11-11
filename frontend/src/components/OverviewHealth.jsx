@@ -53,13 +53,51 @@ function OverviewHealth({ summary }) {
       </div>
 
       {/* Monitoring Snapshot */}
-      <div className="overview-health-card">
-        <h3>Monitoring Snapshot</h3>
+     
+{/* Monitoring Snapshot — Design B */}
+<div className="overview-health-card overview-snapshot-card">
 
-        <p>Tracked Websites: <strong>{total}</strong></p>
-        <p>Open Events: <strong>{events}</strong></p>
-        <p>Auto-Refresh: <strong>60 seconds</strong></p>
+  <div className="snapshot-header">
+    <span className="snapshot-heading-icon">◉</span>
+    <h3>Monitoring Snapshot</h3>
+  </div>
+
+  <div className="snapshot-metrics">
+
+    <div className="snapshot-metric">
+      <span>TRACKED WEBSITES</span>
+      <strong>{total}</strong>
+    </div>
+
+    <div className="snapshot-metric">
+      <span>OPEN EVENTS</span>
+
+      <div className="snapshot-event-value">
+        <strong>{events}</strong>
+        <span
+          className={`snapshot-status-dot ${
+            events > 0 ? "has-events" : "no-events"
+          }`}
+          aria-label={
+            events > 0 ? "Open events present" : "No open events"
+          }
+        />
       </div>
+    </div>
+
+  </div>
+
+  <div className="snapshot-footer">
+    <span>Automatic refresh enabled</span>
+
+    <div className="snapshot-refresh">
+      <span className="snapshot-refresh-icon">↻</span>
+      <span>Every 60s</span>
+    </div>
+  </div>
+
+</div>
+
 
     </div>
   );
