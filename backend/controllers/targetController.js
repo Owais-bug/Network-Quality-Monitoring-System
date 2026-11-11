@@ -1,4 +1,6 @@
 
+const { validateUrl } = require("../services/monitoringService");
+
 const {
     processTargetEvent
 } = require("../services/eventService");
@@ -158,6 +160,12 @@ const addTarget = async (req, res, next) => {
             });
         }
 
+if (!validateUrl(parsedUrl.href)) {
+    return res.status(400).json({
+        message: "Unsafe or blocked website URL"
+    });
+}
+
         const host = parsedUrl.hostname.toLowerCase();
 
         const targetId = await createTarget(
@@ -307,6 +315,13 @@ const editTarget = async (req, res, next) => {
                     "Threshold must be a positive integer"
             });
         }
+
+if (!validateUrl(parsedUrl.href)) {
+    return res.status(400).json({
+        message: "Unsafe or blocked website URL"
+    });
+}
+
 
         const host = parsedUrl.hostname.toLowerCase();
 
