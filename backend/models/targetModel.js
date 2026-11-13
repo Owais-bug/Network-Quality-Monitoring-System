@@ -2,26 +2,34 @@ const pool = require("../config/db");
 
 
 
+
 const getAllTargets = async (status = null) => {
-    
-let query = `
-    SELECT
-        t.*,
-        cr.response_time_ms AS latest_response_time_ms
-    FROM targets t
-    LEFT JOIN check_results cr
-        ON cr.id = (
-            SELECT MAX(cr2.id)
-            FROM check_results cr2
-            WHERE cr2.target_id = t.id
-        )
-    WHERE t.is_archived = 0
-`;
+
+    let query = `
+        SELECT
+            t.*,
+            cr.response_time_ms AS latest_response_time_ms
+        FROM targets t
+
+        LEFT JOIN (
+            SELECT
+                target_id,
+                MAX(id) AS latest_check_id
+            FROM check_results
+            GROUP BY target_id
+        ) latest
+            ON latest.target_id = t.id
+
+        LEFT JOIN check_results cr
+            ON cr.id = latest.latest_check_id
+
+        WHERE t.is_archived = 0
+    `;
 
     const params = [];
 
     if (status !== null) {
-       query += " AND t.current_status = ?";
+        query += " AND t.current_status = ?";
         params.push(status);
     }
 
@@ -29,8 +37,6 @@ let query = `
 
     return rows;
 };
-
-
 
 const createTarget = async (name, host, url, interval_seconds, threshold_ms) => {
 
