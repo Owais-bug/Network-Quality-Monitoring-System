@@ -59,7 +59,7 @@ function Reports() {
     params.set("limit", String(limit));
 
     const url =
-      `http://localhost:5000/api/reports/checks.csv?${params.toString()}`;
+       `/api/reports/checks.csv?${params.toString()}`;
 
     window.location.assign(url);
   };

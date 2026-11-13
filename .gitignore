@@ -12,3 +12,10 @@ frontend/dist/
 
 # Logs
 npm-debug.log*
+
+
+# Local and cloud database credentials
+.env
+.env.*
+**/.env
+**/.env.*

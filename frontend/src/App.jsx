@@ -80,7 +80,7 @@ function App() {
   useEffect(() => {
     setSummaryLoading(true);
     setSummaryError(null);
-    fetch("http://localhost:5000/api/dashboard/summary")
+   fetch("/api/dashboard/summary")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP Error: ${response.status}`);

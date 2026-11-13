@@ -60,11 +60,17 @@ async function testDatabaseConnection() {
     }
 }
 
-testDatabaseConnection();
 
-// Start Backend Server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+/* Local Development Only */
+if (process.env.VERCEL !== "1") {
+    testDatabaseConnection();
 
-    startMonitoringScheduler();
-});
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+
+        startMonitoringScheduler();
+    });
+}
+
+/* Export Express App for Vercel */
+module.exports = app;
