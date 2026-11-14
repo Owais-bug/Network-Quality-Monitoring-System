@@ -1,5 +1,10 @@
+
 import uptimeXLogo from "./assets/UptimeX-sidebar-logo.png";
 import { useEffect, useState } from "react";
+
+// ========================================
+// SIDEBAR ICONS
+// ========================================
 
 const SidebarIcon = ({ name }) => {
   const common = {
@@ -56,6 +61,9 @@ const SidebarIcon = ({ name }) => {
   }
 };
 
+// ========================================
+// SIDEBAR MENU ITEMS
+// ========================================
 
 const menuItems = [
   { name: "Overview", href: "#overview", color: "#60a5fa" },
@@ -63,15 +71,31 @@ const menuItems = [
   { name: "Incidents", href: "#incidents", color: "#fbbf24" },
   { name: "Reports", href: "#reports", color: "#c4b5fd" },
 ];
+
+// ========================================
+// SIDEBAR COMPONENT
+// ========================================
+
 function Sidebar() {
   const [search, setSearch] = useState("");
+
   const [activePage, setActivePage] = useState(
     window.location.hash || "#overview"
   );
 
+  // Mobile Sidebar State
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // ========================================
+  // HANDLE PAGE NAVIGATION
+  // ========================================
+
   useEffect(() => {
     const updatePage = () => {
       setActivePage(window.location.hash || "#overview");
+
+      // Close mobile menu after navigation
+      setMobileMenuOpen(false);
     };
 
     window.addEventListener("hashchange", updatePage);
@@ -81,109 +105,215 @@ function Sidebar() {
     };
   }, []);
 
+  // Close mobile menu using Escape key
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [mobileMenuOpen]);
+
+  // ========================================
+  // SEARCH FILTER
+  // ========================================
+
   const filteredItems = menuItems.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <aside className="sidebar">
-      
-<div className="sidebar-brand">
-  
-<div className="sidebar-logo">
-  <svg
-    className="uptimex-live-logo"
-    viewBox="0 0 64 64"
-    width="54"
-    height="54"
-    role="img"
-    aria-label="UptimeX monitoring logo"
-    fill="none"
-  >
-    {/* Monitor Outline */}
-    <rect
-      x="7"
-      y="12"
-      width="50"
-      height="37"
-      rx="5"
-      stroke="#12d9ed"
-      strokeWidth="3"
-    />
+    <>
+      {/* ========================================
+          MOBILE HAMBURGER BUTTON
+      ======================================== */}
 
-    {/* Animated Heartbeat */}
-    <path
-      className="uptimex-heartbeat-line"
-      d="M12 33 H22 L27 26 L33 43 L40 19 L45 33 H52"
-      stroke="#22d3ee"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+      <button
+        type="button"
+        className="mobile-menu-toggle"
+        aria-label={
+          mobileMenuOpen
+            ? "Close navigation menu"
+            : "Open navigation menu"
+        }
+        aria-expanded={mobileMenuOpen}
+        aria-controls="uptimex-sidebar"
+        onClick={() => setMobileMenuOpen((prev) => !prev)}
+      >
+        ☰
+      </button>
 
-    {/* Monitor Stand */}
-    <path
-      d="M24 56 H40 M32 49 V56"
-      stroke="#2186f9"
-      strokeWidth="3"
-      strokeLinecap="round"
-    />
-  </svg>
-</div>
+      {/* ========================================
+          MOBILE BACKDROP
+      ======================================== */}
 
-
-  <div className="sidebar-brand-text">
-    <h2>UptimeX</h2>
-    <p>Network Quality Workspace</p>
-  </div>
-</div>
-
-
-      <div className="sidebar-search">
-        <span aria-hidden="true">⌕</span>
-        <input
-          type="search"
-          placeholder="Search"
-          aria-label="Search navigation"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      {mobileMenuOpen && (
+        <button
+          type="button"
+          className="mobile-menu-backdrop"
+          aria-label="Close navigation menu"
+          onClick={() => setMobileMenuOpen(false)}
         />
-      </div>
+      )}
 
-      <nav className="sidebar-navigation" aria-label="Main navigation">
-        {filteredItems.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            className={`sidebar-nav-link ${
-              activePage === item.href ? "active" : ""
-            }`}
-          >
-            <span
-  className="sidebar-nav-icon"
-  style={{ color: item.color }}
-  aria-hidden="true"
->
-  <SidebarIcon name={item.name} />
-</span>
+      {/* ========================================
+          MAIN SIDEBAR
+      ======================================== */}
 
-            <span>{item.name}</span>
-          </a>
-        ))}
+      <aside
+        id="uptimex-sidebar"
+        className={`sidebar ${
+          mobileMenuOpen ? "sidebar-mobile-open" : ""
+        }`}
+      >
+        {/* MOBILE CLOSE BUTTON */}
 
-        {filteredItems.length === 0 && (
-          <p className="sidebar-no-results">No matching pages</p>
-        )}
-      </nav>
+        <button
+          type="button"
+          className="mobile-menu-close"
+          aria-label="Close navigation menu"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          ×
+        </button>
 
-      <div className="sidebar-bottom">
-        <div className="sidebar-nav-link sidebar-nav-disabled">
-          <span className="sidebar-nav-icon" aria-hidden="true">⚙</span>
-          <span>Settings</span>
-          <small>Coming soon</small>
+        {/* ========================================
+            SIDEBAR BRAND
+        ======================================== */}
+
+        <div className="sidebar-brand">
+
+          <div className="sidebar-logo">
+            <svg
+              className="uptimex-live-logo"
+              viewBox="0 0 64 64"
+              width="54"
+              height="54"
+              role="img"
+              aria-label="UptimeX monitoring logo"
+              fill="none"
+            >
+              {/* Monitor Outline */}
+
+              <rect
+                x="7"
+                y="12"
+                width="50"
+                height="37"
+                rx="5"
+                stroke="#12d9ed"
+                strokeWidth="3"
+              />
+
+              {/* Animated Heartbeat */}
+
+              <path
+                className="uptimex-heartbeat-line"
+                d="M12 33 H22 L27 26 L33 43 L40 19 L45 33 H52"
+                stroke="#22d3ee"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Monitor Stand */}
+
+              <path
+                d="M24 56 H40 M32 49 V56"
+                stroke="#2186f9"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+
+          <div className="sidebar-brand-text">
+            <h2>UptimeX</h2>
+            <p>Network Quality Workspace</p>
+          </div>
+
         </div>
-      </div>
-    </aside>
+
+        {/* ========================================
+            SIDEBAR SEARCH
+        ======================================== */}
+
+        <div className="sidebar-search">
+          <span aria-hidden="true">⌕</span>
+
+          <input
+            type="search"
+            placeholder="Search"
+            aria-label="Search navigation"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* ========================================
+            SIDEBAR NAVIGATION
+        ======================================== */}
+
+        <nav
+          className="sidebar-navigation"
+          aria-label="Main navigation"
+        >
+          {filteredItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className={`sidebar-nav-link ${
+                activePage === item.href ? "active" : ""
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span
+                className="sidebar-nav-icon"
+                style={{ color: item.color }}
+                aria-hidden="true"
+              >
+                <SidebarIcon name={item.name} />
+              </span>
+
+              <span>{item.name}</span>
+            </a>
+          ))}
+
+          {filteredItems.length === 0 && (
+            <p className="sidebar-no-results">
+              No matching pages
+            </p>
+          )}
+        </nav>
+
+        {/* ========================================
+            SIDEBAR BOTTOM
+        ======================================== */}
+
+        <div className="sidebar-bottom">
+          <div className="sidebar-nav-link sidebar-nav-disabled">
+            <span
+              className="sidebar-nav-icon"
+              aria-hidden="true"
+            >
+              ⚙
+            </span>
+
+            <span>Settings</span>
+            <small>Coming soon</small>
+          </div>
+        </div>
+
+      </aside>
+    </>
   );
 }
 

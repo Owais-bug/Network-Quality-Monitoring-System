@@ -1,90 +1,123 @@
 
-function TargetTable({ targets = [], onToggle, onDelete, onEdit, onViewDetails }) {
-    return (
-        <div className="target-table-container">
-            <table className="targets-table">
-                <thead>
-                    <tr>
-                        <th>Website</th>
-                        <th>URL</th>
-                        <th>Status</th>
-                        <th>Response Time</th>
-                        <th>Last Check</th>
-                        <th>Monitoring</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+function TargetTable({
+  targets = [],
+  onToggle,
+  onDelete,
+  onEdit,
+  onViewDetails
+}) {
+  return (
+    <div className="target-table-container monitors-responsive-table">
 
-                
-<tbody>
-  {targets.map((target) => (
-    <tr key={target.id}>
-      <td>{target.name}</td>
+      <table className="targets-table">
 
-      <td>{target.url}</td>
+        <thead>
+          <tr>
+            <th>Website</th>
+            <th>URL</th>
+            <th>Status</th>
+            <th>Response Time</th>
+            <th>Last Check</th>
+            <th>Monitoring</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-      <td>
-        <span
-          className={`target-status target-status--${(
-            target.current_status || "UNKNOWN"
-          ).toLowerCase()}`}
-        >
-          {target.current_status || "UNKNOWN"}
-        </span>
-      </td>
+        <tbody>
+          {targets.map((target) => (
+            <tr key={target.id}>
 
-      <td>
-        {target.latest_response_time_ms == null
-          ? "—"
-          : `${target.latest_response_time_ms} ms`}
-      </td>
+              {/* Website Name */}
+              <td data-label="Website">
+                {target.name}
+              </td>
 
-      <td>
-        {target.last_checked_at
-          ? new Date(target.last_checked_at).toLocaleString()
-          : "Never checked"}
-      </td>
+              {/* Website URL */}
+              <td data-label="URL">
+                {target.url}
+              </td>
 
-      <td>
-        {target.enabled === 1 ? "Enabled" : "Disabled"}
-      </td>
+              {/* Current Status */}
+              <td data-label="Status">
+                <span
+                  className={`target-status target-status--${(
+                    target.current_status || "UNKNOWN"
+                  ).toLowerCase()}`}
+                >
+                  {target.current_status || "UNKNOWN"}
+                </span>
+              </td>
 
-      <td>
-        <button
-          type="button"
-          onClick={() => onViewDetails(target.id)}
-        >
-          View Details
-        </button>
+              {/* Response Time */}
+              <td data-label="Response Time">
+                {target.latest_response_time_ms == null
+                  ? "—"
+                  : `${target.latest_response_time_ms} ms`}
+              </td>
 
-        <button
-          type="button"
-          onClick={() => onToggle(target.id, target.enabled)}
-        >
-          {target.enabled === 1 ? "Disable" : "Enable"}
-        </button>
+              {/* Last Check */}
+              <td data-label="Last Check">
+                {target.last_checked_at
+                  ? new Date(
+                      target.last_checked_at
+                    ).toLocaleString()
+                  : "Never checked"}
+              </td>
 
-        <button
-          type="button"
-          onClick={() => onEdit(target)}
-        >
-          Edit
-        </button>
+              {/* Monitoring Status */}
+              <td data-label="Monitoring">
+                {target.enabled === 1
+                  ? "Enabled"
+                  : "Disabled"}
+              </td>
 
-        <button
-          type="button"
-          onClick={() => onDelete(target.id, target.name)}
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+              {/* Action Buttons */}
+              <td data-label="Actions">
 
-            </table>
-        </div>
-    );
+                <button
+                  type="button"
+                  onClick={() => onViewDetails(target.id)}
+                >
+                  View Details
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onToggle(target.id, target.enabled)
+                  }
+                >
+                  {target.enabled === 1
+                    ? "Disable"
+                    : "Enable"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onEdit(target)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onDelete(target.id, target.name)
+                  }
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+
+    </div>
+  );
 }
 
 export default TargetTable;

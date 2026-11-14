@@ -3809,3 +3809,310 @@ html[data-theme="light"] input:focus {
 /* Preserve Existing Status Colors */
 /* UP = Green, SLOW = Amber, DOWN = Red */
 /* No animation or API modifications */
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE MOBILE SIDEBAR
+   Preserves desktop design and typography
+   ========================================== */
+
+/* Hide mobile controls on desktop */
+.mobile-menu-toggle,
+.mobile-menu-close,
+.mobile-menu-backdrop {
+  display: none;
+}
+
+/* ==========================================
+   TABLET & MOBILE ONLY
+   ========================================== */
+
+@media (max-width: 900px) {
+
+  /* Remove desktop sidebar spacing */
+  #root {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Make main content fit smaller screens */
+  .app-layout {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    padding: 70px 16px 20px;
+    box-sizing: border-box;
+  }
+
+  .app-layout > section {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Mobile hamburger button */
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    z-index: 1190;
+
+    width: 44px;
+    height: 44px;
+
+    background: var(--accent-bg);
+    color: var(--text-h);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  /* Slide-out sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: min(260px, 86vw);
+    min-width: 0;
+    height: 100dvh;
+    min-height: 0;
+
+    padding-top: 64px;
+    z-index: 1201;
+
+    transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+      transform 250ms ease,
+      visibility 250ms ease;
+  }
+
+  /* Sidebar visible when opened */
+  .sidebar.sidebar-mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Dark overlay behind sidebar */
+  .mobile-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+  }
+
+  /* Close button inside sidebar */
+  .mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    width: 36px;
+    height: 36px;
+
+    color: var(--side-text);
+    background: var(--side-hover);
+    border: 1px solid var(--side-border);
+    border-radius: 9px;
+
+    font-size: 26px;
+    cursor: pointer;
+  }
+}
+
+/* Respect accessibility motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
+}
+
+
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE NAVBAR
+   Desktop design and fonts unchanged
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  /* Keep navbar within mobile screen */
+  .topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+  }
+
+  /* Workspace / Overview */
+  .topbar > :first-child {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  /* Preserve original theme control */
+  .topbar .theme-control {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 14px;
+    margin-left: auto;
+    max-width: 100%;
+  }
+
+  /* Prevent theme switch from shrinking */
+  .topbar .theme-switch {
+    flex-shrink: 0;
+  }
+}
+
+
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE MONITORS TABLE
+   Mobile only | Desktop design preserved
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  /* Remove table horizontal scrolling */
+  .monitors-responsive-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: visible;
+    border: none;
+    background: transparent;
+  }
+
+  /* Allow table to fit mobile width */
+  .monitors-responsive-table .targets-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Hide column headings on mobile */
+  .monitors-responsive-table .targets-table thead {
+    display: none;
+  }
+
+  /* Stack websites vertically */
+  .monitors-responsive-table .targets-table tbody {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  /* Each website becomes a card */
+  .monitors-responsive-table .targets-table tbody tr {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    overflow: hidden;
+  }
+
+  /* Display field label and value */
+  .monitors-responsive-table .targets-table tbody td {
+    display: grid;
+    grid-template-columns: minmax(90px, 36%) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* Show labels from data-label attributes */
+  .monitors-responsive-table .targets-table tbody td::before {
+    content: attr(data-label);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Prevent long URLs from overflowing */
+  .monitors-responsive-table .targets-table td:nth-child(2) {
+    max-width: none;
+    overflow-wrap: anywhere;
+  }
+
+  /* Separators between fields */
+  .monitors-responsive-table .targets-table tbody tr td:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Action buttons wrap naturally */
+  .monitors-responsive-table .targets-table tbody td:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    border-bottom: none;
+  }
+
+  /* Actions label above the buttons */
+  .monitors-responsive-table .targets-table tbody td:last-child::before {
+    flex-basis: 100%;
+  }
+
+  /* Preserve original action button styling */
+  .monitors-responsive-table .targets-table tbody td:last-child button {
+    margin: 0;
+  }
+
+  /* Preserve existing light-theme cell colors */
+  html[data-theme="light"]
+  .monitors-responsive-table .targets-table tbody tr {
+    background: #f3f5f6;
+  }
+
+  html[data-theme="light"]
+  .monitors-responsive-table .targets-table tbody td {
+    background-color: transparent;
+  }
+}
