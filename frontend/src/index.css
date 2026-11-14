@@ -4116,3 +4116,336 @@ html[data-theme="light"] input:focus {
     background-color: transparent;
   }
 }
+
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE ADD WEBSITE FORM
+   Mobile only | Desktop design preserved
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  /* Keep Add Website section inside screen */
+  .add-website-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Add Website button */
+  .add-website-trigger {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Responsive modal */
+  .add-website-section .target-form-card {
+    width: calc(100% - 24px);
+    max-width: 440px;
+
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  /* Form must fit inside modal */
+  .add-website-section .target-form-card form {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Input containers */
+  .add-website-section .target-form-card form > div {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Inputs fit mobile width */
+  .add-website-section .target-form-card input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Add Website submit button */
+  .add-website-section .target-form-card form > button[type="submit"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 10px;
+  }
+
+  /* Cancel button */
+  .add-website-section .target-form-card form > button[type="button"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+}
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE MONITORING HISTORY
+   Mobile only | Desktop design preserved
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  /* Keep history section inside mobile screen */
+  .target-check-history {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Remove horizontal scrolling */
+  .target-check-history .checks-responsive-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: visible;
+    border: none;
+    background: transparent;
+  }
+
+  /* Convert table into mobile layout */
+  .target-check-history .checks-responsive-table .targets-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+  }
+
+  /* Hide desktop column headings */
+  .target-check-history .checks-responsive-table thead {
+    display: none;
+  }
+
+  /* Stack monitoring checks */
+  .target-check-history .checks-responsive-table tbody {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  /* Each monitoring check becomes a card */
+  .target-check-history .checks-responsive-table tbody tr {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    background: var(--detail-panel);
+    border: 1px solid var(--detail-border);
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  /* Field label on left, value on right */
+  .target-check-history .checks-responsive-table tbody td {
+    display: grid;
+    grid-template-columns: minmax(95px, 36%) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    padding: 12px;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* Show field names using data-label */
+  .target-check-history .checks-responsive-table tbody td::before {
+    content: attr(data-label);
+    color: var(--detail-muted);
+    font-weight: 600;
+  }
+
+  /* Remove last separator */
+  .target-check-history .checks-responsive-table tbody tr td:last-child {
+    border-bottom: none;
+  }
+
+  /* Prevent the fixed hamburger from covering
+     history headings when scrolling */
+  .mobile-menu-toggle {
+    position: absolute;
+  }
+}
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE INCIDENTS TABLE
+   Mobile only | Desktop design preserved
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  /* Keep incidents page inside mobile screen */
+  .incidents-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Remove horizontal overflow from table wrapper */
+  .incidents-page .incidents-responsive-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: visible;
+    background: transparent;
+    border: none;
+  }
+
+  /* Convert desktop table into mobile layout */
+  .incidents-page .incidents-responsive-table .targets-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+  }
+
+  /* Hide table headings on mobile */
+  .incidents-page .incidents-responsive-table thead {
+    display: none;
+  }
+
+  /* Stack incidents vertically */
+  .incidents-page .incidents-responsive-table tbody {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  /* Each incident becomes a card */
+  .incidents-page .incidents-responsive-table tbody tr {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* Labels on left, values on right */
+  .incidents-page .incidents-responsive-table tbody td {
+    display: grid;
+    grid-template-columns: minmax(95px, 36%) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* Field names from data-label */
+  .incidents-page .incidents-responsive-table tbody td::before {
+    content: attr(data-label);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Description can wrap across lines */
+  .incidents-page .incidents-responsive-table tbody td:nth-child(4) {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  /* Preserve status and severity badges */
+  .incidents-page .incidents-responsive-table .incident-event-type,
+  .incidents-page .incidents-responsive-table .incident-severity {
+    justify-self: start;
+    max-width: 100%;
+  }
+
+  /* Remove bottom border from last field */
+  .incidents-page .incidents-responsive-table tbody tr td:last-child {
+    border-bottom: none;
+  }
+
+  /* Keep original light-theme appearance */
+  html[data-theme="light"]
+  .incidents-page .incidents-responsive-table tbody tr {
+    background: #ffffff;
+  }
+}
+
+
+
+/* ==========================================
+   UPTIMEX — RESPONSIVE REPORTS PAGE
+   Mobile only | Desktop design preserved
+   ========================================== */
+
+@media (max-width: 550px) {
+
+  /* Keep Reports content inside mobile width */
+  .reports-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Preserve existing split-panel design */
+  .reports-page .reports-split-layout {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    box-sizing: border-box;
+  }
+
+  /* Stack export fields vertically */
+  .reports-page .reports-split-layout > form {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-width: none !important;
+    min-width: 0;
+
+    padding: 20px !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Prevent fields from overflowing */
+  .reports-page .reports-split-layout form > div {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .reports-page .reports-split-layout select,
+  .reports-page .reports-split-layout input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}

@@ -49,7 +49,10 @@ function Incidents() {
     return () => controller.abort();
   }, []);
 
-  // Severity values come from actual database records
+  // ========================================
+  // FILTER OPTIONS
+  // ========================================
+
   const severityOptions = [
     ...new Set(
       events.map((event) => event.severity).filter(Boolean)
@@ -91,6 +94,10 @@ function Incidents() {
     );
   });
 
+  // ========================================
+  // RESET FILTERS
+  // ========================================
+
   const resetFilters = () => {
     setSeverity("ALL");
     setStatus("ALL");
@@ -98,11 +105,19 @@ function Incidents() {
     setToDate("");
   };
 
-  return (<section className="incidents-page">
-  <TypingHeading text="Incidents." />
-  <p>Monitor network issues and event history.</p>
+  return (
+    <section className="incidents-page">
+
+      <TypingHeading text="Incidents." />
+
+      <p>Monitor network issues and event history.</p>
+
+      {/* ========================================
+          INCIDENT FILTERS
+      ======================================== */}
 
       <div className="incident-filters">
+
         <label>
           Severity
           <select
@@ -110,6 +125,7 @@ function Incidents() {
             onChange={(e) => setSeverity(e.target.value)}
           >
             <option value="ALL">All Severities</option>
+
             {severityOptions.map((value) => (
               <option key={value} value={value}>
                 {value}
@@ -150,14 +166,26 @@ function Incidents() {
           />
         </label>
 
-        <button type="button" onClick={resetFilters}>
+        <button
+          type="button"
+          onClick={resetFilters}
+        >
           Clear Filters
         </button>
+
       </div>
+
+      {/* ========================================
+          LOADING AND ERROR
+      ======================================== */}
 
       {loading && <p>Loading incidents...</p>}
 
       {error && <p role="alert">{error}</p>}
+
+      {/* ========================================
+          INCIDENT HISTORY
+      ======================================== */}
 
       {!loading && !error && (
         <>
@@ -169,8 +197,11 @@ function Incidents() {
           {filteredEvents.length === 0 ? (
             <p>No incidents found for selected filters.</p>
           ) : (
-            <div className="target-table-container">
+
+            <div className="target-table-container incidents-responsive-table">
+
               <table className="targets-table">
+
                 <thead>
                   <tr>
                     <th>Website</th>
@@ -185,44 +216,53 @@ function Incidents() {
                 <tbody>
                   {filteredEvents.map((event) => (
                     <tr key={event.id}>
-                      <td>{event.target_name}</td>
-                      
-<td>
-  <span
-    className={`incident-event-type incident-event-type--${event.event_type?.toLowerCase()}`}
-  >
-    {event.event_type}
-  </span>
-</td>
 
-                      
-<td>
-  <span
-    className={`incident-severity incident-severity--${event.severity?.toLowerCase()}`}
-  >
-    {event.severity}
-  </span>
-</td>
+                      <td data-label="Website">
+                        {event.target_name}
+                      </td>
 
-                      <td>{event.message}</td>
-                      <td>
+                      <td data-label="Event Type">
+                        <span
+                          className={`incident-event-type incident-event-type--${event.event_type?.toLowerCase()}`}
+                        >
+                          {event.event_type}
+                        </span>
+                      </td>
+
+                      <td data-label="Severity">
+                        <span
+                          className={`incident-severity incident-severity--${event.severity?.toLowerCase()}`}
+                        >
+                          {event.severity}
+                        </span>
+                      </td>
+
+                      <td data-label="Description">
+                        {event.message}
+                      </td>
+
+                      <td data-label="Created At">
                         {new Date(
                           event.created_at
                         ).toLocaleString()}
                       </td>
-                      <td>
+
+                      <td data-label="Status">
                         {event.resolved_at
                           ? "Resolved"
                           : "Open"}
                       </td>
+
                     </tr>
                   ))}
                 </tbody>
+
               </table>
             </div>
           )}
         </>
       )}
+
     </section>
   );
 }

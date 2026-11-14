@@ -11,53 +11,59 @@ function TargetDetails({ targetId, onBack }) {
   const [availability, setAvailability] = useState(null);
   const [availabilityLoading, setAvailabilityLoading] = useState(true);
   const [availabilityError, setAvailabilityError] = useState("");
-  
-useEffect(() => {
-  const controller = new AbortController();
 
-  const loadDetails = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  // ========================================
+  // FETCH TARGET DETAILS AND HISTORY
+  // ========================================
 
-      const [targetResponse, historyResponse] =
-        await Promise.all([
-          fetch(`/api/targets/${targetId}`, {
-            signal: controller.signal,
-          }),
-          fetch(`/api/targets/${targetId}/history?limit=500`, {
-            signal: controller.signal,
-          }),
-        ]);
+  useEffect(() => {
+    const controller = new AbortController();
 
-      if (!targetResponse.ok || !historyResponse.ok) {
-        throw new Error("Unable to load target details.");
+    const loadDetails = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const [targetResponse, historyResponse] =
+          await Promise.all([
+            fetch(`/api/targets/${targetId}`, {
+              signal: controller.signal,
+            }),
+            fetch(`/api/targets/${targetId}/history?limit=500`, {
+              signal: controller.signal,
+            }),
+          ]);
+
+        if (!targetResponse.ok || !historyResponse.ok) {
+          throw new Error("Unable to load target details.");
+        }
+
+        const targetData = await targetResponse.json();
+        const historyData = await historyResponse.json();
+
+        if (!controller.signal.aborted) {
+          setTarget(targetData);
+          setHistory(historyData.history || []);
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
+    };
 
-      const targetData = await targetResponse.json();
-      const historyData = await historyResponse.json();
+    loadDetails();
 
-      if (!controller.signal.aborted) {
-        setTarget(targetData);
-        setHistory(historyData.history || []);
-      }
-    } catch (err) {
-      if (err.name !== "AbortError") {
-        setError(err.message);
-      }
-    } finally {
-      if (!controller.signal.aborted) {
-        setLoading(false);
-      }
-    }
-  };
+    return () => controller.abort();
+  }, [targetId]);
 
-  loadDetails();
-
-  return () => controller.abort();
-}, [targetId]);
-
-
+  // ========================================
+  // FETCH WEBSITE AVAILABILITY
+  // ========================================
 
   useEffect(() => {
     const controller = new AbortController();
@@ -104,6 +110,9 @@ useEffect(() => {
     return () => controller.abort();
   }, [targetId, range]);
 
+  // ========================================
+  // LOADING AND ERROR STATES
+  // ========================================
 
   if (loading) {
     return <p>Loading target details...</p>;
@@ -113,12 +122,18 @@ useEffect(() => {
     return (
       <div role="alert">
         <p>{error}</p>
-        <button onClick={onBack}>Back to Monitors</button>
+        <button onClick={onBack}>
+          Back to Monitors
+        </button>
       </div>
     );
   }
 
   if (!target) return null;
+
+  // ========================================
+  // FILTER MONITORING HISTORY
+  // ========================================
 
   const hours = {
     "1H": 1,
@@ -130,8 +145,13 @@ useEffect(() => {
     Date.now() - hours[range] * 60 * 60 * 1000;
 
   const filteredHistory = history.filter(
-    (item) => new Date(item.checked_at).getTime() >= cutoff
+    (item) =>
+      new Date(item.checked_at).getTime() >= cutoff
   );
+
+  // ========================================
+  // PREPARE RESPONSE-TIME CHART DATA
+  // ========================================
 
   const chartData = filteredHistory
     .filter(
@@ -141,32 +161,45 @@ useEffect(() => {
     )
     .sort(
       (a, b) =>
-        new Date(a.checked_at) - new Date(b.checked_at)
+        new Date(a.checked_at) -
+        new Date(b.checked_at)
     );
 
   const maxResponse = Math.max(
     1,
-    ...chartData.map((item) => Number(item.response_time_ms))
+    ...chartData.map((item) =>
+      Number(item.response_time_ms)
+    )
   );
 
-  const points = chartData.map((item, index) => {
-    const x =
-      chartData.length === 1
-        ? 300
-        : 20 + (index / (chartData.length - 1)) * 560;
+  const points = chartData
+    .map((item, index) => {
+      const x =
+        chartData.length === 1
+          ? 300
+          : 20 +
+            (index / (chartData.length - 1)) * 560;
 
-    const y =
-      145 - (Number(item.response_time_ms) / maxResponse) * 125;
+      const y =
+        145 -
+        (Number(item.response_time_ms) / maxResponse) *
+          125;
 
-    return `${x},${y}`;
-  }).join(" ");
+      return `${x},${y}`;
+    })
+    .join(" ");
+
+  // ========================================
+  // DETERMINE MONITORING CHECK STATUS
+  // ========================================
 
   const checkStatus = (item) => {
     if (!item.success) return "DOWN";
 
     if (
       item.response_time_ms != null &&
-      Number(item.response_time_ms) > target.threshold_ms
+      Number(item.response_time_ms) >
+        target.threshold_ms
     ) {
       return "SLOW";
     }
@@ -176,13 +209,24 @@ useEffect(() => {
 
   return (
     <div className="target-details">
+
+      {/* ========================================
+          BACK BUTTON
+      ======================================== */}
+
       <button type="button" onClick={onBack}>
         ← Back to Monitors
       </button>
 
+      {/* ========================================
+          TARGET HEADER
+      ======================================== */}
+
       <div className="target-details-header">
         <h2>{target.name}</h2>
+
         <p>{target.url}</p>
+
         <span
           className={`target-status target-status--${(
             target.current_status || "UNKNOWN"
@@ -192,7 +236,12 @@ useEffect(() => {
         </span>
       </div>
 
+      {/* ========================================
+          TARGET METRICS
+      ======================================== */}
+
       <div className="target-details-metrics">
+
         <div>
           <p>Latest Response</p>
           <h3>
@@ -204,7 +253,9 @@ useEffect(() => {
 
         <div>
           <p>Monitoring</p>
-          <h3>{target.enabled ? "Enabled" : "Disabled"}</h3>
+          <h3>
+            {target.enabled ? "Enabled" : "Disabled"}
+          </h3>
         </div>
 
         <div>
@@ -216,9 +267,15 @@ useEffect(() => {
           <p>Threshold</p>
           <h3>{target.threshold_ms} ms</h3>
         </div>
+
       </div>
 
+      {/* ========================================
+          WEBSITE AVAILABILITY
+      ======================================== */}
+
       <div className="target-availability-card">
+
         <div className="availability-header">
           <h3>Website Availability</h3>
           <span>{range}</span>
@@ -229,11 +286,16 @@ useEffect(() => {
         ) : availabilityError ? (
           <p role="alert">{availabilityError}</p>
         ) : availability?.availabilityPercent == null ? (
-          <p>No monitoring checks available for this period.</p>
+          <p>
+            No monitoring checks available for this period.
+          </p>
         ) : (
           <>
             <h2 className="availability-percentage">
-              {Number(availability.availabilityPercent).toFixed(2)}%
+              {Number(
+                availability.availabilityPercent
+              ).toFixed(2)}
+              %
             </h2>
 
             <p>Successful monitoring checks</p>
@@ -242,7 +304,9 @@ useEffect(() => {
               className="availability-progress"
               role="progressbar"
               aria-label="Website availability"
-              aria-valuenow={availability.availabilityPercent}
+              aria-valuenow={
+                availability.availabilityPercent
+              }
               aria-valuemin={0}
               aria-valuemax={100}
             >
@@ -255,26 +319,39 @@ useEffect(() => {
             </div>
 
             <div className="availability-stats">
+
               <div>
                 <span>Total Checks</span>
-                <strong>{availability.totalChecks}</strong>
+                <strong>
+                  {availability.totalChecks}
+                </strong>
               </div>
 
               <div>
                 <span>Successful</span>
-                <strong>{availability.successfulChecks}</strong>
+                <strong>
+                  {availability.successfulChecks}
+                </strong>
               </div>
 
               <div>
                 <span>Failed</span>
-                <strong>{availability.failedChecks}</strong>
+                <strong>
+                  {availability.failedChecks}
+                </strong>
               </div>
+
             </div>
           </>
         )}
       </div>
 
+      {/* ========================================
+          RESPONSE-TIME HISTORY CHART
+      ======================================== */}
+
       <div className="target-history-chart">
+
         <h3>Response-Time History</h3>
 
         <div className="chart-filters">
@@ -295,7 +372,10 @@ useEffect(() => {
         ) : (
           <svg
             viewBox="0 0 600 170"
-            style={{ width: "100%", height: "180px" }}
+            style={{
+              width: "100%",
+              height: "180px",
+            }}
             role="img"
             aria-label="Response-time history graph"
           >
@@ -322,9 +402,11 @@ useEffect(() => {
                 cx="300"
                 cy={
                   145 -
-                  (Number(chartData[0].response_time_ms) /
+                  (Number(
+                    chartData[0].response_time_ms
+                  ) /
                     maxResponse) *
-                  125
+                    125
                 }
                 r="5"
                 fill="#60a5fa"
@@ -332,16 +414,26 @@ useEffect(() => {
             )}
           </svg>
         )}
+
       </div>
 
+      {/* ========================================
+          RECENT MONITORING CHECKS
+          RESPONSIVE TABLE
+      ======================================== */}
+
       <div className="target-check-history">
+
         <h3>Recent Monitoring Checks</h3>
 
         {filteredHistory.length === 0 ? (
           <p>No monitoring checks in this period.</p>
         ) : (
-          <div className="target-table-container">
+          <div
+            className="target-table-container checks-responsive-table"
+          >
             <table className="targets-table">
+
               <thead>
                 <tr>
                   <th>Checked At</th>
@@ -352,25 +444,41 @@ useEffect(() => {
               </thead>
 
               <tbody>
-                {filteredHistory.slice(0, 10).map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      {new Date(item.checked_at).toLocaleString()}
-                    </td>
-                    <td>{checkStatus(item)}</td>
-                    <td>
-                      {item.response_time_ms == null
-                        ? "—"
-                        : `${item.response_time_ms} ms`}
-                    </td>
-                    <td>{item.http_status_code ?? "—"}</td>
-                  </tr>
-                ))}
+                {filteredHistory
+                  .slice(0, 10)
+                  .map((item) => (
+                    <tr key={item.id}>
+
+                      <td data-label="Checked At">
+                        {new Date(
+                          item.checked_at
+                        ).toLocaleString()}
+                      </td>
+
+                      <td data-label="Status">
+                        {checkStatus(item)}
+                      </td>
+
+                      <td data-label="Response Time">
+                        {item.response_time_ms == null
+                          ? "—"
+                          : `${item.response_time_ms} ms`}
+                      </td>
+
+                      <td data-label="HTTP Code">
+                        {item.http_status_code ?? "—"}
+                      </td>
+
+                    </tr>
+                  ))}
               </tbody>
+
             </table>
           </div>
         )}
+
       </div>
+
     </div>
   );
 }
